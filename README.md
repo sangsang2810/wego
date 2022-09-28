@@ -1,4 +1,4 @@
-# Project Title
+# WEGO
 
 A short description about the project and/or client.
 
