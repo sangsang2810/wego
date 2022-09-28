@@ -48,6 +48,7 @@ Additional notes on how to deploy this on a live or release system. Explaining t
 
 * Master:
 * Feature:
+* Release:
 * Bugfix:
 * etc...
 
@@ -57,3 +58,5 @@ Additional notes on how to deploy this on a live or release system. Explaining t
 * Confluence link:
 * Asana board:
 * etc...
+
+Link: https://www.youtube.com/watch?v=vQgcl8VouLU&ab_channel=TipsJavascript
