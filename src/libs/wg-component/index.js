@@ -1,0 +1,1 @@
+export { default as WGChipComponent} from './WGChip.component'

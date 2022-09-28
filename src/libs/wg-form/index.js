@@ -1,0 +1,1 @@
+export { default as WGFormComponent } from './WGForm.component'

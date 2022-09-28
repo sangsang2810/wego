@@ -1,0 +1,1 @@
+export { default as WGHeader } from './WGHeader.component'

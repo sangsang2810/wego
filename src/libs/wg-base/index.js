@@ -1,0 +1,1 @@
+export { default as WGBackgroundComponent } from './WGBackground.component'
