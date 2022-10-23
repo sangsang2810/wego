@@ -76,7 +76,9 @@ function PlanCreatePartyScreen() {
     </Button>
   );
 
-  const onClickBadge = () => {};
+  const onClickBadge = () => {
+    console.log('clicked badge delete');
+  };
 
   const renderCell = (title: string) => {
     let cell;

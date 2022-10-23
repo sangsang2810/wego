@@ -15,7 +15,6 @@ const ICONS_ENUM = {
   SEARCH: require('../../../assets/icons/search.png'),
   ADD: require('../../../assets/icons/add.png'),
   ADD_USER: require('../../../assets/icons/add-user.png'),
-  NOTE: require('../../../assets/icons/note.png'),
 };
 
 const IMAGES_ENUM = {
@@ -29,7 +28,6 @@ const IMAGES_ENUM = {
   TRANSPORT_SHIP: require('../../../assets/ship.png'),
   TRANSPORT_MOTOR: require('../../../assets/motorcycle.png'),
   TRANSPORT_PLANE: require('../../../assets/plane.png'),
-  ADD_IMAGE: require('../../../assets/add-image.png'),
 };
 
 const ASSETS_ENUM = {
