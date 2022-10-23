@@ -14,8 +14,8 @@ interface LocationModel {
 }
 
 interface CreateMStoneProps {
-  addMStoneCallBack: any;
-  locationData: any;
+  addMStoneCallBack?: any;
+  locationData?: any;
 }
 
 function CreateMStoneComponent(props: CreateMStoneProps) {
