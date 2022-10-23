@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   Flex,
-  HStack,
   Image,
   Input,
   KeyboardAvoidingView,
