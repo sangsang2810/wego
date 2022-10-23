@@ -143,6 +143,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
     cloneLocation.map((item, index) => {
       const date = item.date.toLocaleDateString('vi-VN', options);
       // if has date > push item
+      
       const time = DateTimeService.getTimeFromDate(item.time);
 
       const convertTime = { ...item, time };
