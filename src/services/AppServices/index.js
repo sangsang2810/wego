@@ -1,5 +1,0 @@
-// export { default as DateTimeService } from './DateTime.service'
-export { default as ImagePickerService } from './ImagePicker.service'
-export { default as ToastService } from './Toast.Service'
-export { default as TimeLineService } from './TimeLine.service'
-export { default as DateTimeService } from './DateTime.service'

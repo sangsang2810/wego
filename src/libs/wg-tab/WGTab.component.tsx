@@ -1,46 +1,43 @@
-import { Text, View } from 'native-base';
+import { Box, Container, Text, View, VStack } from 'native-base';
 import * as React from 'react';
-import { Dimensions, LogBox, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, useWindowDimensions } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { WGTimeLineComponent } from '../wg-timeline';
 
 interface WGTabProps {
-  routes?: any;
+  routes?: routeConfig[] | [],
 }
 
 interface routeConfig {
   // key is unique
-  key: string;
-  tabTitle: string;
+  key: string,
+  tabTitle: string,
+  tabView: JSX.Element,
 }
 
 function WGTab(props: WGTabProps) {
+
   const initialLayout = {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('window').width
   };
 
   React.useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-
     let routeSetting: { key: string; title: string }[] = [];
     let sceneSetting = {};
-    const object = props.routes;
-    for (const property in object) {
-      if (Object.prototype.hasOwnProperty.call(object, property)) {
-        const { key, tabTitle, locations } = object[property];
-        routeSetting.push({ key, title: tabTitle });
-        Object.assign(sceneSetting, {
-          [key]: () => (
-            <View>
-              <WGTimeLineComponent data={locations} />
-            </View>
-          ),
-        });
-      }
-    }
-    setRoutes(routeSetting);
-    setScene(sceneSetting);
-  }, [props]);
+
+    const temp = props.routes;
+    temp?.map((item) => {
+      routeSetting.push({ key: item.key, title: item.tabTitle });
+      Object.assign(sceneSetting, {
+        [item.key]: () => (
+          <View h={'full'}>
+            {item.tabView}
+          </View>
+        )
+      });
+    })
+    setRoutes(routeSetting)
+    setScene(sceneSetting)
+  }, []);
 
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState<{ key: string; title: string }[]>([]);
@@ -56,10 +53,14 @@ function WGTab(props: WGTabProps) {
       style={styles.tabBar}
       indicatorStyle={{ backgroundColor: 'violet' }}
       renderLabel={({ route, focused, color }) => (
-        <Text style={{ color, fontWeight: '600' }}>{route.title}</Text>
+        <Text style={{ color, fontWeight: '600' }}>
+          {route.title}
+        </Text>
       )}
+
     />
   );
+
 
   return (
     <TabView
@@ -73,6 +74,7 @@ function WGTab(props: WGTabProps) {
   );
 }
 export default React.memo(WGTab);
+
 
 const styles = StyleSheet.create({
   tabBar: {
