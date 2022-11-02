@@ -25,8 +25,9 @@ import { ASSETS_ENUM, MESSAGES_ENUM } from '../../../utils/enums';
 import { ImagePickerService, ToastService } from '../../../services';
 import CreateMStoneComponent from './CreateMStone.component';
 import { createTrip } from '../TripSlice';
-import { useAppDispatch } from '../../../app/hooks';
+
 import { TripModel } from 'models';
+import { useAppDispatch } from '../../../app/hook';
 
 function PlanCreateTripScreen(props) {
   const dispatch = useAppDispatch();
