@@ -3,15 +3,12 @@ import {
   Box,
   Button,
   Center,
-  Flex,
   FormControl,
   HStack,
-  Icon,
   Image,
   Input,
   KeyboardAvoidingView,
   ScrollView,
-  Text,
   VStack,
 } from 'native-base';
 

@@ -14,8 +14,8 @@ interface LocationModel {
 }
 
 interface CreateMStoneProps {
-  addMStoneCallBack: any;
-  locationData: any;
+  addMStoneCallBack?: any;
+  locationData?: any;
 }
 
 function CreateMStoneComponent(props: CreateMStoneProps) {
@@ -143,6 +143,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
     cloneLocation.map((item, index) => {
       const date = item.date.toLocaleDateString('vi-VN', options);
       // if has date > push item
+      
       const time = DateTimeService.getTimeFromDate(item.time);
 
       const convertTime = { ...item, time };

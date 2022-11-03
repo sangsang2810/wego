@@ -8,6 +8,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AppNavigation from './src/App.navigation';
 import { ASSETS_ENUM } from './src/utils/enums';
 import { BlurView } from 'expo-blur';
+import { Provider } from 'react-redux';
+import { store } from './src/app/store';
 
 const AuthenticationStack = createStackNavigator();
 const AuthenticationNavigator = () => {
@@ -49,41 +51,40 @@ const theme = extendTheme({
 
 export default function App() {
   return (
-    <NativeBaseProvider config={config} theme={theme}>
-      <NavigationContainer>
-        <Box
-          bg={{
-            linearGradient: {
-              colors: ['indigo.200', 'fuchsia.300'],
-              start: [0, 0],
-              end: [1, 1],
-            },
-          }}
-          style={styles.container}
-        >
-          <Box style={styles.container}>
-            <ImageBackground
-              source={ASSETS_ENUM.IMAGES_ENUM.BACKGROUND}
-              // alt="Alternate Text"
-              // size={'2xl'}
-              resizeMode={'cover'}
-              // blurRadius={8}
-              style={[styles.image, StyleSheet.absoluteFill]}
-            >
-              <BlurView intensity={100} style={styles.container}>
-                <SafeAreaView style={[styles.container, styles.safeArea]}>
-                  <View style={styles.container}>
-                    {/* <AppNavigation/> */}
-                    <Tabs />
-                  </View>
-                </SafeAreaView>
-              </BlurView>
-            </ImageBackground>
+    <Provider store={store}>
+      <NativeBaseProvider config={config} theme={theme}>
+        <NavigationContainer>
+          <Box
+            bg={{
+              linearGradient: {
+                colors: ['indigo.200', 'fuchsia.300'],
+                start: [0, 0],
+                end: [1, 1],
+              },
+            }}
+            style={styles.container}
+          >
+            <Box style={styles.container}>
+              <ImageBackground
+                source={ASSETS_ENUM.IMAGES_ENUM.BACKGROUND}
+                resizeMode={'cover'}
+                style={[styles.image, StyleSheet.absoluteFill]}
+              >
+                <BlurView intensity={100} style={styles.container}>
+                  <SafeAreaView style={[styles.container, styles.safeArea]}>
+                    <View style={styles.container}>
+                      {/* <AppNavigation/> */}
+                      <Tabs />
+                    </View>
+                  </SafeAreaView>
+                </BlurView>
+              </ImageBackground>
+            </Box>
           </Box>
-        </Box>
-        {/* <AuthenticationNavigator /> */}
-      </NavigationContainer>
-    </NativeBaseProvider>
+          {/* <AuthenticationNavigator /> */}
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </Provider>
   );
 }
 
