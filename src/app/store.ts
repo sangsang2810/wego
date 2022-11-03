@@ -1,9 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
+import TripReducer from '../screens/Plan/TripSlice';
 
 export const store = configureStore({
   reducer: {
-    // trip: tripReducer
+    trips: TripReducer,
   },
+  devTools: process.env.NODE_ENV !== 'production',
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

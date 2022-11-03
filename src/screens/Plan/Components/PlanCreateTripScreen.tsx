@@ -24,8 +24,13 @@ import {
 import { ASSETS_ENUM, MESSAGES_ENUM } from '../../../utils/enums';
 import { ImagePickerService, ToastService } from '../../../services';
 import CreateMStoneComponent from './CreateMStone.component';
+import { createTrip } from '../TripSlice';
 
-function PlanCreateTripScreen() {
+import { TripModel } from 'models';
+import { useAppDispatch } from '../../../app/hook';
+
+function PlanCreateTripScreen(props) {
+  const dispatch = useAppDispatch();
   const { onCopy } = useClipboard();
   const config = ['banner', 'trip name', 'leader', 'members', 'deposit'];
 
@@ -43,13 +48,26 @@ function PlanCreateTripScreen() {
     deposit: 'Tiền cọc',
   };
 
-  const [formData, setData] = React.useState({
+  const [formData, setData] = React.useState<TripModel>({
     banner: '',
     name: '',
     leader: '',
     linkInvite: 'link.ne.com',
     deposit: '',
     locations: [],
+    transport: {
+      vehicle: '',
+      start: {
+        date: new Date(),
+        from: new Date(),
+        to: new Date(),
+      },
+      end: {
+        date: new Date(),
+        from: new Date(),
+        to: new Date(),
+      },
+    },
   });
 
   const [errors, setErrors] = React.useState({});
@@ -78,6 +96,10 @@ function PlanCreateTripScreen() {
   const onSubmit = () => {
     const isValid = validate();
     if (isValid) {
+      dispatch(createTrip(formData));
+      // console.log('props', props);
+
+      props.navigation.navigate('PlanMain');
     }
   };
 
