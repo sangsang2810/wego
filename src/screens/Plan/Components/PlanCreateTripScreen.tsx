@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   Flex,
-  HStack,
   Image,
   Input,
   KeyboardAvoidingView,
@@ -13,7 +12,7 @@ import {
   VStack,
   useClipboard,
 } from 'native-base';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
 import {
   WGBackgroundComponent,
@@ -22,7 +21,7 @@ import {
   WGFormControlComponent,
 } from '../../../libs';
 import { ASSETS_ENUM, MESSAGES_ENUM } from '../../../utils/enums';
-import { ImagePickerService, ToastService } from '../../../services';
+import { ImagePickerService, ProvinceService, ToastService } from '../../../services';
 import CreateMStoneComponent from './CreateMStone.component';
 import { createTrip } from '../TripSlice';
 
@@ -32,7 +31,18 @@ import { useAppDispatch } from '../../../app/hook';
 function PlanCreateTripScreen(props) {
   const dispatch = useAppDispatch();
   const { onCopy } = useClipboard();
-  const config = ['banner', 'trip name', 'leader', 'members', 'deposit'];
+  const config = ['banner', 'province', 'trip name', 'leader', 'members', 'deposit'];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const allProvince = await ProvinceService.getAllProvinceName();
+      const allProvinceName: string[] = allProvince.map((item) => item.name);
+      setProvinces(allProvinceName);
+    };
+    fetchData()
+      // make sure to catch any error
+      .catch(console.error);
+  }, []);
 
   const userInfor = {
     id: 1,
@@ -46,14 +56,17 @@ function PlanCreateTripScreen(props) {
     leader: 'Trưởng nhóm',
     members: 'Mời thành viên',
     deposit: 'Tiền cọc',
+    province: 'Địa điểm',
   };
 
+  const [provinces, setProvinces] = React.useState<String[]>([]);
   const [formData, setData] = React.useState<TripModel>({
     banner: '',
     name: '',
     leader: '',
     linkInvite: 'link.ne.com',
     deposit: '',
+    province: '',
     locations: [],
     transport: {
       vehicle: '',
@@ -73,7 +86,6 @@ function PlanCreateTripScreen(props) {
   const [errors, setErrors] = React.useState({});
 
   const validate = () => {
-    // error = {} to check again
     setErrors({});
     let errors = {};
     // * validate name
@@ -96,9 +108,8 @@ function PlanCreateTripScreen(props) {
   const onSubmit = () => {
     const isValid = validate();
     if (isValid) {
-      dispatch(createTrip(formData));
-      // console.log('props', props);
-
+      const updateData = { ...formData, deposit: formData.deposit.replace(',', '') };
+      dispatch(createTrip(updateData));
       props.navigation.navigate('PlanMain');
     }
   };
@@ -146,6 +157,34 @@ function PlanCreateTripScreen(props) {
           </Pressable>
         );
         break;
+      case 'province':
+        cell = (
+          <WGFormControlComponent
+            errorMessage={errors['province']}
+            helperText="Tối đa 18 ký tự"
+            name="province"
+            errors={errors}
+          >
+            <Input
+              isInvalid={'province' in errors}
+              isRequired
+              placeholder="Đi đâu á ?"
+              variant="filled"
+              bg={'white:alpha.80'}
+              fontSize={'md'}
+              color={'violet.500'}
+              maxLength={18}
+              value={formData.province}
+              onChangeText={(value) =>
+                setData({
+                  ...formData,
+                  province: value,
+                })
+              }
+            />
+          </WGFormControlComponent>
+        );
+        break;
       case 'trip name':
         cell = (
           <>
@@ -158,7 +197,6 @@ function PlanCreateTripScreen(props) {
               <Input
                 isInvalid={'name' in errors}
                 isRequired
-                fontWeight="semibold"
                 placeholder="Đà Lạt hem"
                 variant="filled"
                 bg={'white:alpha.80'}
@@ -220,11 +258,14 @@ function PlanCreateTripScreen(props) {
                   isInvalid={'deposit' in errors}
                   isRequired
                   variant="filled"
+                  maxLength={9}
                   width={'2/4'}
-                  fontWeight="semibold"
                   fontSize={'md'}
                   color={'violet.500'}
-                  value={formData.deposit}
+                  value={formData.deposit
+                    .replace(/^0+/, '')
+                    .replace(/\D/g, '')
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   placeholder="Cọc nhiu nà"
                   keyboardType="number-pad"
                   onChangeText={(value) =>

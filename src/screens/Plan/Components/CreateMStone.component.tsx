@@ -50,6 +50,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
             <Image source={sourceImg} resizeMode="contain" alt="icn-add" />
           </Icon>
           <Input
+            fontSize={'md'}
             variant="filled"
             placeholder={placeholder}
             value={locationForm[fieldName]}
@@ -143,7 +144,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
     cloneLocation.map((item, index) => {
       const date = item.date.toLocaleDateString('vi-VN', options);
       // if has date > push item
-      
+
       const time = DateTimeService.getTimeFromDate(item.time);
 
       const convertTime = { ...item, time };
@@ -199,7 +200,6 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
           <Input
             variant="filled"
             placeholder="Tên địa điểm"
-            fontWeight="semibold"
             fontSize={'md'}
             color={'violet.500'}
             value={locationForm.title}

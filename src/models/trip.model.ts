@@ -5,6 +5,7 @@ export type TripModel = {
   linkInvite: string;
   deposit: string;
   locations: TimeLineModel[];
+  province: string;
   transport: {
     vehicle: 'motorBike' | 'flight' | 'bus' | '';
     start: {
