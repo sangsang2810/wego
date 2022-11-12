@@ -1,7 +1,11 @@
 import { Button, Center, Flex, HStack, Icon, Image, Input, Text, View } from 'native-base';
 import React from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { WGFormComponent, WGFormControlComponent, WGTab } from '../../../libs';
+import {
+  WGDateTimePickerComponent,
+  WGFormComponent,
+  WGFormControlComponent,
+  WGTab,
+} from '../../../libs';
 import { ASSETS_ENUM, MESSAGES_ENUM } from '../../../utils/enums';
 import { DateTimeService, ToastService } from '../../../services';
 
@@ -24,7 +28,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
   const addrIcon = ASSETS_ENUM.ICONS_ENUM.PIN;
   const noteIcon = ASSETS_ENUM.ICONS_ENUM.NOTE;
 
-  const [routes, setRoutes] = React.useState();
+  const [routes, setRoutes] = React.useState<any>();
   const [locationErrors, setLocationErrors] = React.useState({});
   const [locationForm, setLocationForm] = React.useState<LocationModel>({
     time: new Date(),
@@ -39,14 +43,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
       <WGFormControlComponent name={fieldName} errors={locationErrors} displayHelp={false}>
         {' '}
         <HStack px={3} flexDirection={'row'} justifyContent={'center'} alignItems="center">
-          <Icon
-            mr={1}
-            size="md"
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            color="white"
-          >
+          <Icon mr={1} size="md" display={'flex'} justifyContent={'center'} alignItems={'center'}>
             <Image source={sourceImg} resizeMode="contain" alt="icn-add" />
           </Icon>
           <Input
@@ -61,11 +58,11 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
     );
   };
 
-  const onChangeDate = (_, selectedDate) => {
+  const onChangeDate = (selectedDate) => {
     setLocationForm({ ...locationForm, date: selectedDate });
   };
 
-  const onChangeTime = (_, selectedTime) => {
+  const onChangeTime = (selectedTime) => {
     setLocationForm({ ...locationForm, time: selectedTime });
   };
 
@@ -81,13 +78,9 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
       // temp
       time: new Date(),
       date: new Date(),
-      //
-      dateTime: '',
       address: '',
       title: '',
-      openAt: '',
-      price: '',
-      image: '',
+      note: '',
     });
   };
 
@@ -174,7 +167,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
             <Button variant={'ghost'} onPress={handleResetLocationForm}>
               Nhập lại
             </Button>
-            <HStack justifyContent="flex-end" pr={3}>
+            {/* <HStack justifyContent="flex-end" pr={3}>
               <DateTimePicker
                 style={{ width: '50%', height: 40 }}
                 testID="dateTimePicker"
@@ -193,7 +186,14 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
                 onChange={onChangeTime}
                 minimumDate={new Date()}
               />
-            </HStack>
+            </HStack> */}
+            <WGDateTimePickerComponent
+              mode="dateTime"
+              date={locationForm.date}
+              time={locationForm.time}
+              dateCallBack={onChangeDate}
+              timeCallBack={onChangeTime}
+            />
           </Flex>
         </View>
         <WGFormControlComponent name="title" errors={locationErrors} displayHelp={false}>

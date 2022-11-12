@@ -1,27 +1,30 @@
+import { TripModel } from 'models';
 import {
   Box,
   Text,
-  Flex,
   AspectRatio,
   Image,
-  Center,
   HStack,
-  Heading,
   Avatar,
   VStack,
   Pressable,
+  Icon,
+  Flex,
+  View,
 } from 'native-base';
 import React from 'react';
-import { ASSETS_ENUM } from '../../utils/enums';
+import { ASSETS_ENUM, PLAN_ENUM } from '../../utils/enums';
 
 interface WGCardComponent {
   onCardPress?(name: number): any;
   variant?: 'default' | 'trip' | 'party';
-  data: any;
+  data: TripModel;
 }
 
 function WGCardComponent(props: WGCardComponent) {
-  const { onCardPress, variant } = props;
+  const { onCardPress, variant, data } = props;
+  console.log('data', data);
+
   const transportImg = {
     plane: ASSETS_ENUM.IMAGES_ENUM.TRANSPORT_PLANE,
     ship: ASSETS_ENUM.IMAGES_ENUM.TRANSPORT_SHIP,
@@ -97,29 +100,61 @@ function WGCardComponent(props: WGCardComponent) {
   const renderTripContent = () => (
     <>
       <Box>
-        <HStack flexDirection={'row'} space={6} justifyContent={'center'} alignItems={'center'}>
+        <Text fontSize={'lg'} fontWeight="bold" noOfLines={1} color={'violet.700'}>
+          {data.name}
+        </Text>
+        <Box>
+          <HStack alignItems={'center'} space={0.5}>
+            <View>
+              <Image
+                tintColor={'rose.600'}
+                source={ASSETS_ENUM.ICONS_ENUM.PIN_FILL}
+                resizeMode="contain"
+                alt="icn-add"
+                fadeDuration={0}
+                style={{ width: 12, height: 12 }}
+              />
+            </View>
+            {/* <Icon size="xs">
+              <Image
+
+              />
+            </Icon> */}
+            <Text fontSize={'xs'} color="darkText">
+              Đà Lạt
+            </Text>
+          </HStack>
+          <Text fontSize={'xs'} color="darkText">
+            Cọc:{' '}
+            <Text fontSize={'xs'} fontWeight={'semibold'} color="darkText">
+              {data.deposit}
+            </Text>
+          </Text>
+          <Text fontSize={'xs'} color="darkText">
+            Host: Shang
+          </Text>
+        </Box>
+        {/* <HStack flexDirection={'row'} space={6} justifyContent={'center'} alignItems={'center'}>
           <Box>
             <Text fontSize="xs" fontWeight="semibold">
               Đà Nẵng
             </Text>
-            <Text fontSize="md">17:00</Text>
+            <Text fontSize="xs">17:00</Text>
           </Box>
-
           <Image size={8} source={transportImg.motor} alt="transport" />
-
           <Box>
             <Text fontSize="xs" fontWeight="semibold">
               Khánh Hòa
             </Text>
-            <Text fontSize="md">19:00</Text>
+            <Text fontSize="xs">19:00</Text>
           </Box>
-        </HStack>
+        </HStack> */}
       </Box>
-      <HStack mt={3}>
+      {/* <HStack mt={3}>
         <Text fontSize="md">30.12.22</Text>
         <Text fontSize="md"> - </Text>
         <Text fontSize="md">02.01.23</Text>
-      </HStack>
+      </HStack> */}
     </>
   );
 
@@ -144,23 +179,22 @@ function WGCardComponent(props: WGCardComponent) {
   return (
     <Pressable onPress={handleOnPress}>
       <Box bg={'white'} rounded="lg">
-        <HStack space={3} m={3}>
+        <HStack space={2} p="1">
           <Box maxW={'1/3'}>
             <AspectRatio w="100%" ratio={1 / 1}>
               <Image
                 rounded="md"
                 source={{
-                  uri: 'https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg',
+                  uri: data?.banner
+                    ? data?.banner
+                    : 'https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg',
                 }}
                 alt="image"
               />
             </AspectRatio>
-            <Center
+            <Box
               rounded="md"
               bg="violet.500"
-              _dark={{
-                bg: 'violet.400',
-              }}
               _text={{
                 color: 'warmGray.50',
                 fontWeight: '700',
@@ -168,11 +202,10 @@ function WGCardComponent(props: WGCardComponent) {
               }}
               position="absolute"
               top="0"
-              px="3"
-              py="1.5"
+              p="1"
             >
-              location
-            </Center>
+              {data?.type === PLAN_ENUM.TRIP.code ? PLAN_ENUM.TRIP.name : PLAN_ENUM.PARTY.name}
+            </Box>
           </Box>
           <VStack maxW={'2/3'} alignItems="flex-start" h={'full'}>
             {renderContent(variant)}

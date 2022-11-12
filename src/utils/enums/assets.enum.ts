@@ -16,6 +16,7 @@ const ICONS_ENUM = {
   ADD: require('../../../assets/icons/add.png'),
   ADD_USER: require('../../../assets/icons/add-user.png'),
   NOTE: require('../../../assets/icons/note.png'),
+  PIN_FILL: require('../../../assets/icons/pin-fill.png'),
 };
 
 const IMAGES_ENUM = {
