@@ -20,13 +20,13 @@ import {
   WGFormComponent,
   WGFormControlComponent,
 } from '../../../libs';
-import { ASSETS_ENUM, MESSAGES_ENUM } from '../../../utils/enums';
+import { ASSETS_ENUM, MESSAGES_ENUM, PLAN_ENUM } from '../../../utils/enums';
 import { ImagePickerService, ProvinceService, ToastService } from '../../../services';
 import CreateMStoneComponent from './CreateMStone.component';
 import { createTrip } from '../TripSlice';
 
 import { TripModel } from 'models';
-import { useAppDispatch } from '../../../app/hook';
+import { useAppDispatch } from '../../../app/hooks';
 
 function PlanCreateTripScreen(props) {
   const dispatch = useAppDispatch();
@@ -61,6 +61,8 @@ function PlanCreateTripScreen(props) {
 
   const [provinces, setProvinces] = React.useState<String[]>([]);
   const [formData, setData] = React.useState<TripModel>({
+    id: '',
+    type: PLAN_ENUM.TRIP.code,
     banner: '',
     name: '',
     leader: '',
@@ -107,8 +109,10 @@ function PlanCreateTripScreen(props) {
 
   const onSubmit = () => {
     const isValid = validate();
+    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+
     if (isValid) {
-      const updateData = { ...formData, deposit: formData.deposit.replace(',', '') };
+      const updateData = { ...formData, deposit: formData.deposit.replace(',', ''), id: uniqueId };
       dispatch(createTrip(updateData));
       props.navigation.navigate('PlanMain');
     }

@@ -1,0 +1,1 @@
+export { default as WGDateTimePickerComponent } from './WGDateTimePicker.component'

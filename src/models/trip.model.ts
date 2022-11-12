@@ -1,4 +1,6 @@
 export type TripModel = {
+  id: string;
+  type: string;
   banner: string;
   name: string;
   leader: string;

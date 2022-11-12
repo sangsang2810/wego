@@ -1,3 +1,4 @@
+import { useAppSelector } from '../../app/hooks';
 import {
   VStack,
   Box,
@@ -12,15 +13,26 @@ import {
 } from 'native-base';
 import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import { WGBackgroundComponent, WGCardComponent, WGFormComponent } from '../../libs';
+import {
+  WGBackgroundComponent,
+  WGBigCardComponent,
+  WGCardComponent,
+  WGFormComponent,
+} from '../../libs';
+import { TripModel } from 'models';
 
 interface PlanDetailProps {
   navigation: any;
 }
 
 function PlanScreen(props: PlanDetailProps) {
-  const handleCardPress = (value: any) => {
-    return props.navigation.navigate('PlanDetail');
+  // * Get data from store
+  const trips = useAppSelector((state) => state.trips);
+
+  const handleCardPress = (tripId: string) => {
+    console.log('handleCardPress', tripId);
+
+    return props.navigation.navigate('PlanDetail', { tripId });
   };
 
   const handleCreateTripClick = () => {
@@ -100,8 +112,16 @@ function PlanScreen(props: PlanDetailProps) {
       >
         <ScrollView>
           <VStack style={styles.container} space={3}>
-            <WGCardComponent onCardPress={handleCardPress} />
-            <WGCardComponent onCardPress={handleCardPress} variant="trip" />
+            {trips.length > 0 ? (
+              trips.map((trip) => (
+                <WGBigCardComponent key={trip.id} data={trip} onCardPress={handleCardPress} />
+              ))
+            ) : (
+              <Center h={'full'}>
+                <Text fontWeight={'bold'}>Không đi đâu à ?</Text>
+                <Text>Nhanh trí thêm chuyến đi ở phần "Khởi Tạo" nà</Text>
+              </Center>
+            )}
           </VStack>
         </ScrollView>
       </WGFormComponent>
