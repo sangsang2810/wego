@@ -1,0 +1,26 @@
+const AIRPORT = [
+    {name:'Sân bay Quốc tế Nội Bài',code:'HAN'},
+    {name:'Sân bay quốc tế Cát Bi ',code:'HPH'},
+    {name:'Sân bay Điện Biên Phủ',code:'DIN'},
+    {name:'Sân bay Thọ Xuân',code:'THD'},
+    {name:'Sân bay quốc tế Vinh',code:'VII'},
+    {name:'Sân bay Đồng Hới',code:'VDH'},
+    {name:'Sân bay quốc tế Phú Bài',code:'HUI'},
+    {name:'Sân bay quốc tế Đà Nẵng',code:'DAD'},
+    {name:'Sân bay quốc tế Chu Lai',code:'VCL'},
+    {name:'Sân bay Phù Cát',code:'UIH'},
+    {name:'Sân bay Tuy Hòa',code:'TBB'},
+    {name:'Sân bay quốc tế Cam Ranh',code:'CXR'},
+    {name:'Sân bay Buôn Ma Thuột',code:'BMV'},
+    {name:'Sân bay Liên Khương',code:'DLI'},
+    {name:'Sân bay Pleiku',code:'PXU'},
+    {name:'Sân bay quốc tế Tân Sơn Nhất',code:'SGN'},
+    {name:'Sân bay Cà Mau',code:'CAH'},
+    {name:'Sân bay Côn Đảo',code:'VCS'},
+    {name:'Sân bay quốc tế Cần Thơ',code:'VCA'},
+    {name:'Sân bay Rạch Giá',code:'VKG'},
+    {name:'Sân bay quốc tế Phú Quốc',code:'PQC'},
+    {name:'Sân bay Quốc tế Vân Đồn',code:'VDO'},    
+]
+
+export default AIRPORT;

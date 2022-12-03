@@ -11,6 +11,8 @@ import {
   Text,
   VStack,
   useClipboard,
+  HStack,
+  View,
 } from 'native-base';
 import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
@@ -20,6 +22,7 @@ import {
   WGChipComponent,
   WGFormComponent,
   WGFormControlComponent,
+  WGDateTimePickerComponent,
 } from '../../../libs';
 import { ASSETS_ENUM, MESSAGES_ENUM, PLAN_ENUM } from '../../../utils/enums';
 import { ImagePickerService, ProvinceService, ToastService } from '../../../services';
@@ -207,13 +210,61 @@ function PlanCreateTripScreen(props) {
         break;
       case 'vehicle':
         cell = (
-          <WGDropdownComponent
+          <VStack space={3}>
+            <WGDropdownComponent
             data={DROPDOWN_ENUM.VEHICLE_DDL_DATA}
             type={'image'}
             fieldName={'vehicle'}
             ddlValue={formData?.transport.vehicle.value}
             onDropdownChange={handleDropdownChange}
           />
+           <HStack>
+
+           <Box pr={1} w={'1/2'}>
+           <Text>Khởi hành</Text>
+            <VStack space={2}>
+            <WGDateTimePickerComponent
+              mode="dateTime"
+              // date={locationForm.date}
+              // time={locationForm.time}
+              // dateCallBack={onChangeDate}
+              // timeCallBack={onChangeTime}
+            />  
+            
+            <Input
+              placeholder="From"
+              variant="filled"
+              bg={'white:alpha.80'}
+              fontSize={'md'}
+              value={'Tân Sơn Nhất'}
+            />
+            </VStack>
+              
+           </Box>
+           <Box pl={1} w={'1/2'}>
+           <Text>Đi về</Text>
+           <VStack space={2}>
+            <WGDateTimePickerComponent
+              mode="dateTime"
+              // date={locationForm.date}
+              // time={locationForm.time}
+              // dateCallBack={onChangeDate}
+              // timeCallBack={onChangeTime}
+            />  
+            
+            <Input
+              placeholder="From"
+              variant="filled"
+              bg={'white:alpha.80'}
+              fontSize={'md'}
+              value={'Tân Sơn Nhất'}
+            />
+            </VStack>
+              
+           </Box>
+
+           </HStack>
+          </VStack>
         );
         break;
       case 'trip name':

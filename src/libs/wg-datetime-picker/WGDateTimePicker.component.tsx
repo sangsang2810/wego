@@ -50,7 +50,7 @@ function WGDateTimePickerComponent(props: DateTimePickerProps) {
 
   const renderDateTime = () => {
     return (
-      <HStack space={3}>
+      <HStack space={1}>
         {renderDate()}
         {renderTime()}
       </HStack>
