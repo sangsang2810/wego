@@ -4,7 +4,7 @@ import { Dimensions, LogBox, StyleSheet } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { WGTimeLineComponent } from '../wg-timeline';
 
-interface WGTab {
+interface WGTabTimeLine {
   routes?: any;
 }
 
@@ -14,7 +14,7 @@ interface routeConfig {
   tabTitle: string;
 }
 
-function WGTab(props: WGTab) {
+function WGTabTimeLine(props: WGTabTimeLine) {
   const initialLayout = {
     width: Dimensions.get('window').width,
   };
@@ -72,7 +72,7 @@ function WGTab(props: WGTab) {
     />
   );
 }
-export default React.memo(WGTab);
+export default React.memo(WGTabTimeLine);
 
 const styles = StyleSheet.create({
   tabBar: {

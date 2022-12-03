@@ -1,1 +1,1 @@
-export { default as WGTab} from './WGTab.component'
+export { default as WGTabTimeLine } from './WGTabTimeLine.component'

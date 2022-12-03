@@ -95,7 +95,7 @@ function WGBigCardComponent(props: WGBigCardProps) {
           <Divider bg="coolGray.200" thickness="1" orientation="horizontal" />
 
           <Box py={2}>
-            <HStack alignItems={'center'} justifyContent={'space-between'} w={'full'}>
+            <HStack alignItems={'center'} justifyContent={'space-between'}>
               <Avatar.Group
                 justifyContent="flex-start"
                 alignItems={'center'}
@@ -103,6 +103,7 @@ function WGBigCardComponent(props: WGBigCardProps) {
                   size: 'sm',
                 }}
                 max={3}
+                px={4}
               >
                 <Avatar
                   mr={2}
@@ -161,7 +162,7 @@ function WGBigCardComponent(props: WGBigCardProps) {
               </Popover>
             </HStack>
           </Box>
-          <Divider bg="coolGray.200" thickness="1" orientation="horizontal" />
+          {/* <Divider bg="coolGray.200" thickness="1" orientation="horizontal" /> */}
           <Text
             pt={1}
             color="coolGray.600"

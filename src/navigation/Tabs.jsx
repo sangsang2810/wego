@@ -1,5 +1,5 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import React from 'react'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen';
 import PlanNavigation from '../screens/Plan/Plan.navigate';
@@ -10,7 +10,6 @@ import { ASSETS_ENUM, SCREEN_ENUMS } from '../utils/enums';
 const Tab = createBottomTabNavigator();
 
 function Tabs() {
-
   const tabsConfig = [
     {
       name: SCREEN_ENUMS.HOME.name,
@@ -31,8 +30,8 @@ function Tabs() {
       name: SCREEN_ENUMS.SETTING.name,
       iconUri: ASSETS_ENUM.ICONS_ENUM.SETTING,
       component: SettingScreen,
-    }
-  ]
+    },
+  ];
 
   return (
     <Tab.Navigator
@@ -50,33 +49,37 @@ function Tabs() {
           backgroundColor: '#ffffff',
           height: 80,
           ...styles.shadow,
-        }
+        },
       }}
     >
-      {
-        tabsConfig.map((item, index) => {
-          return (
-            <Tab.Screen style={styles.container} key={index} name={item.name} component={item.component} options={{
+      {tabsConfig.map((item, index) => {
+        return (
+          <Tab.Screen
+            style={styles.container}
+            key={index}
+            name={item.name}
+            component={item.component}
+            options={{
               tabBarIcon: ({ focused }) => (
                 <View style={styles.tab}>
                   <Image
                     alt={index}
                     source={item.iconUri}
-                    resizeMode='contain'
+                    resizeMode="contain"
                     style={{
                       width: 25,
                       height: 25,
                       tintColor: focused ? 'red' : '#748c94',
-                    }} />
+                    }}
+                  />
                 </View>
               ),
             }}
-            />
-          )
-        })
-      }
+          />
+        );
+      })}
     </Tab.Navigator>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -91,13 +94,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.5,
-    elevation: 5
+    elevation: 5,
   },
   tab: {
     alignItems: 'center',
     justifyContent: 'center',
     top: 10,
-  }
-})
+  },
+});
 
-export default Tabs
+export default Tabs;

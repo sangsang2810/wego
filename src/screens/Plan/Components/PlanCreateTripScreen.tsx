@@ -15,6 +15,7 @@ import {
 import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
 import {
+  WGDropdownComponent,
   WGBackgroundComponent,
   WGChipComponent,
   WGFormComponent,
@@ -25,19 +26,34 @@ import { ImagePickerService, ProvinceService, ToastService } from '../../../serv
 import CreateMStoneComponent from './CreateMStone.component';
 import { createTrip } from '../TripSlice';
 
-import { TripModel } from 'models';
+import { DropdownModel, TripModel } from 'models';
 import { useAppDispatch } from '../../../app/hooks';
+import DROPDOWN_ENUM from '../../../utils/enums/dropdow.enum';
 
 function PlanCreateTripScreen(props) {
   const dispatch = useAppDispatch();
   const { onCopy } = useClipboard();
-  const config = ['banner', 'province', 'trip name', 'leader', 'members', 'deposit'];
+  const config = ['banner', 'province', 'trip name', 'vehicle', 'leader', 'members', 'deposit'];
+  const convertName: FormName = {
+    banner: 'Banner',
+    'trip name': 'Tên chuyến đi',
+    leader: 'Trưởng nhóm',
+    members: 'Mời thành viên',
+    deposit: 'Tiền cọc',
+    province: 'Địa điểm',
+    vehicle: 'Phương tiện & khởi hành',
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const allProvince = await ProvinceService.getAllProvinceName();
-      const allProvinceName: string[] = allProvince.map((item) => item.name);
-      setProvinces(allProvinceName);
+      const allDist = await ProvinceService.getAllDistrictName();
+      let provinces: DropdownModel[] = [];
+      allDist.map((item) => {
+        const tamp = { value: item.code, label: item.path };
+        provinces.push(tamp);
+      });
+
+      setProvinces(provinces);
     };
     fetchData()
       // make sure to catch any error
@@ -50,17 +66,8 @@ function PlanCreateTripScreen(props) {
     imgUrl: '',
   };
 
-  const convertName: FormName = {
-    banner: 'Banner',
-    'trip name': 'Tên chuyến đi',
-    leader: 'Trưởng nhóm',
-    members: 'Mời thành viên',
-    deposit: 'Tiền cọc',
-    province: 'Địa điểm',
-  };
-
-  const [provinces, setProvinces] = React.useState<String[]>([]);
-  const [formData, setData] = React.useState<TripModel>({
+  const [provinces, setProvinces] = React.useState<DropdownModel[]>([]);
+  const [formData, setFormData] = React.useState<TripModel>({
     id: '',
     type: PLAN_ENUM.TRIP.code,
     banner: '',
@@ -68,10 +75,19 @@ function PlanCreateTripScreen(props) {
     leader: '',
     linkInvite: 'link.ne.com',
     deposit: '',
-    province: '',
+    province: {
+      label: '',
+      value: '',
+    },
     locations: [],
     transport: {
-      vehicle: '',
+      vehicle: {
+        label: '',
+        value: '',
+        image: {
+          uri: '',
+        },
+      },
       start: {
         date: new Date(),
         from: new Date(),
@@ -127,7 +143,7 @@ function PlanCreateTripScreen(props) {
     let banner = '';
     await ImagePickerService.choosePhoto().then((res) => (banner = res));
 
-    setData({
+    setFormData({
       ...formData,
       banner,
     });
@@ -136,10 +152,27 @@ function PlanCreateTripScreen(props) {
   const handleAddMilestone = (data) => {
     formData.locations.push(data);
     const locations = formData.locations;
-    setData({
+    setFormData({
       ...formData,
       locations,
     });
+  };
+
+  const handleDropdownChange = (item, name) => {
+    if (name === 'vehicle') {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          vehicle: item,
+        },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: item,
+      });
+    }
   };
 
   const renderCell = (title: string) => {
@@ -163,30 +196,24 @@ function PlanCreateTripScreen(props) {
         break;
       case 'province':
         cell = (
-          <WGFormControlComponent
-            errorMessage={errors['province']}
-            helperText="Tối đa 18 ký tự"
-            name="province"
-            errors={errors}
-          >
-            <Input
-              isInvalid={'province' in errors}
-              isRequired
-              placeholder="Đi đâu á ?"
-              variant="filled"
-              bg={'white:alpha.80'}
-              fontSize={'md'}
-              color={'violet.500'}
-              maxLength={18}
-              value={formData.province}
-              onChangeText={(value) =>
-                setData({
-                  ...formData,
-                  province: value,
-                })
-              }
-            />
-          </WGFormControlComponent>
+          <WGDropdownComponent
+            data={provinces}
+            type={'default'}
+            fieldName={'province'}
+            ddlValue={formData?.province?.value}
+            onDropdownChange={handleDropdownChange}
+          />
+        );
+        break;
+      case 'vehicle':
+        cell = (
+          <WGDropdownComponent
+            data={DROPDOWN_ENUM.VEHICLE_DDL_DATA}
+            type={'image'}
+            fieldName={'vehicle'}
+            ddlValue={formData?.transport.vehicle.value}
+            onDropdownChange={handleDropdownChange}
+          />
         );
         break;
       case 'trip name':
@@ -208,7 +235,7 @@ function PlanCreateTripScreen(props) {
                 color={'violet.500'}
                 value={formData.name}
                 onChangeText={(value) =>
-                  setData({
+                  setFormData({
                     ...formData,
                     name: value,
                   })
@@ -273,7 +300,7 @@ function PlanCreateTripScreen(props) {
                   placeholder="Cọc nhiu nà"
                   keyboardType="number-pad"
                   onChangeText={(value) =>
-                    setData({
+                    setFormData({
                       ...formData,
                       deposit: value,
                     })

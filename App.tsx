@@ -33,6 +33,7 @@ const theme = extendTheme({
       // Can simply pass default props to change default behaviour of components.
       baseStyle: {
         rounded: 'md',
+        fontWeight: 'bold',
       },
       defaultProps: {
         colorScheme: 'violet',
@@ -41,6 +42,13 @@ const theme = extendTheme({
     ScrollView: {
       baseStyle: {
         // marginBottom: 65,
+      },
+    },
+    Input: {
+      baseStyle: {
+        rounded: 'md',
+        height: 12,
+        backgroundColor: 'white',
       },
     },
   },

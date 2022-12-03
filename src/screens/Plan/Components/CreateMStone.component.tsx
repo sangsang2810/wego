@@ -4,10 +4,10 @@ import {
   WGDateTimePickerComponent,
   WGFormComponent,
   WGFormControlComponent,
-  WGTab,
+  WGTabTimeLine,
 } from '../../../libs';
 import { ASSETS_ENUM, MESSAGES_ENUM } from '../../../utils/enums';
-import { DateTimeService, ToastService } from '../../../services';
+import { TimeLineService, ToastService } from '../../../services';
 
 interface LocationModel {
   time: Date;
@@ -47,6 +47,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
             <Image source={sourceImg} resizeMode="contain" alt="icn-add" />
           </Icon>
           <Input
+            w={'full'}
             fontSize={'md'}
             variant="filled"
             placeholder={placeholder}
@@ -126,35 +127,10 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
   };
 
   const configRoutes = () => {
-    const options = {
-      weekday: 'short',
-      day: '2-digit',
-      month: '2-digit',
-    };
     const cloneLocation = [...locationData];
+    console.log('locationData', locationData);
 
-    let milestone = {};
-    cloneLocation.map((item, index) => {
-      const date = item.date.toLocaleDateString('vi-VN', options);
-      // if has date > push item
-
-      const time = DateTimeService.getTimeFromDate(item.time);
-
-      const convertTime = { ...item, time };
-      if (milestone[date]) {
-        milestone[date].locations.push(convertTime);
-      } else {
-        milestone = {
-          ...milestone,
-          [date]: {
-            key: index,
-            tabTitle: date,
-            locations: [],
-          },
-        };
-        milestone[date].locations.push(convertTime);
-      }
-    });
+    const milestone = TimeLineService.configRoutes(cloneLocation);
 
     setRoutes(milestone);
   };
@@ -167,26 +143,6 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
             <Button variant={'ghost'} onPress={handleResetLocationForm}>
               Nhập lại
             </Button>
-            {/* <HStack justifyContent="flex-end" pr={3}>
-              <DateTimePicker
-                style={{ width: '50%', height: 40 }}
-                testID="dateTimePicker"
-                value={locationForm.date}
-                mode={'date'}
-                is24Hour={true}
-                onChange={onChangeDate}
-                minimumDate={new Date()}
-              />
-              <DateTimePicker
-                style={{ width: '30%', height: 40 }}
-                testID="dateTimePicker1"
-                value={locationForm.time}
-                mode={'time'}
-                is24Hour={true}
-                onChange={onChangeTime}
-                minimumDate={new Date()}
-              />
-            </HStack> */}
             <WGDateTimePickerComponent
               mode="dateTime"
               date={locationForm.date}
@@ -218,7 +174,7 @@ function CreateMStoneComponent(props: CreateMStoneProps) {
         <WGFormComponent title="Lộ trình">
           <View h={routes ? '80' : '16'}>
             {routes ? (
-              <WGTab routes={routes} />
+              <WGTabTimeLine routes={routes} />
             ) : (
               <Center h={'full'}>
                 <Text fontWeight={'bold'}>Chưa có lịch trình gì hết !!! </Text>

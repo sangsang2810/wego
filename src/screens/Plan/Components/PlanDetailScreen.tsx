@@ -1,4 +1,5 @@
 import { RootState } from 'app/store';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   AspectRatio,
   Avatar,
@@ -19,10 +20,11 @@ import {
   WGBackgroundComponent,
   WGFormComponent,
   WGHeader,
-  WGTab,
+  WGTabTimeLine,
   WGTimeLineComponent,
 } from '../../../libs';
-import { SCREEN_ENUMS } from '../../../utils/enums';
+import { ASSETS_ENUM, SCREEN_ENUMS } from '../../../utils/enums';
+import { configRouteByTripId } from '../TripSlice';
 
 interface PlanDetailProps {
   route: any;
@@ -44,6 +46,8 @@ function PlanDetailScreen(props: PlanDetailProps) {
   const tripData = useSelector((state: RootState) =>
     state.trips.find((trip) => trip.id === tripId)
   );
+
+  const routes = useSelector((state: RootState) => configRouteByTripId(state, tripId));
 
   console.log('PlanDetailScreen', tripData);
 
@@ -117,13 +121,12 @@ function PlanDetailScreen(props: PlanDetailProps) {
 
   return (
     <Box style={{ flex: 1 }}>
-      <View w={'full'} position={'absolute'} zIndex="99">
-        <WGHeader
-          isDisplayRight={false}
-          isDisplayLeft={true}
-          title={SCREEN_ENUMS.PLAN_DETAILS.name}
-        />
-      </View>
+      <WGHeader
+        isDisplayRight={false}
+        isDisplayLeft={true}
+        title={SCREEN_ENUMS.PLAN_DETAILS.name}
+      />
+      {/* <View w={'full'}></View> */}
       <ScrollView
         horizontal={false}
         style={styles.scrollView}
@@ -133,8 +136,6 @@ function PlanDetailScreen(props: PlanDetailProps) {
         <Box>
           <AspectRatio w="100%" ratio={16 / 15}>
             <Image
-              rounded={'md'}
-              roundedBottomRight={58}
               source={{
                 uri: tripData?.banner
                   ? tripData?.banner
@@ -143,12 +144,8 @@ function PlanDetailScreen(props: PlanDetailProps) {
               alt="imagePlanDetail"
             />
           </AspectRatio>
-          <Center
-            rounded="md"
-            bg="violet.500"
-            _dark={{
-              bg: 'violet.400',
-            }}
+
+          <VStack
             _text={{
               color: 'warmGray.50',
               fontWeight: '700',
@@ -156,93 +153,105 @@ function PlanDetailScreen(props: PlanDetailProps) {
             }}
             position="absolute"
             bottom="0"
-            px="3"
-            py="1.5"
+            width="full"
+            height="70"
+            px="4"
           >
-            Nha Trang nà
-          </Center>
+            <LinearGradient style={{ flex: 1 }} colors={['transparent', 'rgba(0,0,0,0.8)']}>
+              <Heading color="white">{tripData?.name}</Heading>
+              <HStack alignItems={'center'} space={1}>
+                <View>
+                  <Image
+                    tintColor={'white'}
+                    source={ASSETS_ENUM.ICONS_ENUM.PIN_FILL}
+                    resizeMode="contain"
+                    alt="icn-add"
+                    fadeDuration={0}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+                <Text fontSize="sm" color="white" fontWeight="500">
+                  {tripData?.province}
+                </Text>
+              </HStack>
+            </LinearGradient>
+          </VStack>
         </Box>
 
         {/* <View h={180} p={3}>
-          <WGTab routes={temp} />
+          <WGTabTimeLine routes={temp} />
         </View> */}
 
-        <WGFormComponent title={'Thông tin chuyến đi'}>
-          <Text>hello</Text>
-        </WGFormComponent>
+        <Box px={4} pt={4}>
+          <VStack space={5}>
+            <WGFormComponent title={'Thông tin chuyến đi'}>
+              <Text>hello</Text>
+            </WGFormComponent>
 
-        <VStack p={3} space={5}>
-          <View p={3} bgColor="white" rounded={'md'}>
-            <Heading size="md" ml="-1">
-              Đặt cọc & Thành viên
-            </Heading>
-            <HStack p={3} pb="0" bg="red" justifyContent="space-between">
-              <Text fontSize="lg" fontWeight={'semibold'} color={'violet.700'}>
-                500k
-              </Text>
-              <Avatar.Group
-                _avatar={{
-                  size: 'sm',
-                }}
-                max={3}
-              >
-                <Avatar
-                  bg="green.500"
-                  source={{
-                    uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+            <View p={3} bgColor="white" rounded={'md'}>
+              <Heading size="md" ml="-1">
+                Đặt cọc & Thành viên
+              </Heading>
+              <HStack p={3} pb="0" bg="red" justifyContent="space-between">
+                <Text fontSize="lg" fontWeight={'semibold'} color={'violet.700'}>
+                  500k
+                </Text>
+                <Avatar.Group
+                  _avatar={{
+                    size: 'sm',
                   }}
+                  max={3}
                 >
-                  A2
-                </Avatar>
-                <Avatar
-                  bg="green.500"
-                  source={{
-                    uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                  }}
-                >
-                  A1
-                </Avatar>
-                <Avatar
-                  bg="green.500"
-                  source={{
-                    uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                  }}
-                >
-                  A3
-                </Avatar>
-                <Avatar
-                  bg="green.500"
-                  source={{
-                    uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                  }}
-                >
-                  A4
-                </Avatar>
-              </Avatar.Group>
-            </HStack>
-          </View>
-          <View p={3} bgColor="white" rounded={'md'}>
-            <Heading mb={3} size="md" ml="-1">
-              Đi chơi Nha Trang
-            </Heading>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-              dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-              mollit anim id est laborum.
-            </Text>
-          </View>
-          <View p={3} bgColor="white" rounded={'md'}>
-            <Heading size="md" ml="-1">
-              Lộ trình nà
-            </Heading>
-            <View h={'96'}>
-              <WGTab routes={temp2} />
+                  <Avatar
+                    bg="green.500"
+                    source={{
+                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                    }}
+                  >
+                    A2
+                  </Avatar>
+                  <Avatar
+                    bg="green.500"
+                    source={{
+                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                    }}
+                  >
+                    A1
+                  </Avatar>
+                  <Avatar
+                    bg="green.500"
+                    source={{
+                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                    }}
+                  >
+                    A3
+                  </Avatar>
+                  <Avatar
+                    bg="green.500"
+                    source={{
+                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                    }}
+                  >
+                    A4
+                  </Avatar>
+                </Avatar.Group>
+              </HStack>
             </View>
-          </View>
-        </VStack>
+
+            <WGFormComponent title="Lộ trình">
+              <View h={routes ? '80' : '16'}>
+                {routes ? (
+                  <WGTabTimeLine routes={routes} />
+                ) : (
+                  <Center h={'full'}>
+                    <Text fontWeight={'bold'}>Chưa có lịch trình gì hết !!! </Text>
+                    <Text>Tạo chuyến đi ở phần "Thêm địa điểm"</Text>
+                  </Center>
+                )}
+              </View>
+            </WGFormComponent>
+          </VStack>
+        </Box>
       </ScrollView>
     </Box>
   );

@@ -1,3 +1,5 @@
+import { DropdownModel } from './common.model';
+
 export type TripModel = {
   id: string;
   type: string;
@@ -7,9 +9,9 @@ export type TripModel = {
   linkInvite: string;
   deposit: string;
   locations: TimeLineModel[];
-  province: string;
+  province: DropdownModel;
   transport: {
-    vehicle: 'motorBike' | 'flight' | 'bus' | '';
+    vehicle: DropdownModel;
     start: {
       date: Date;
       from: Date;
