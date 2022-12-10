@@ -20,7 +20,7 @@ function WGChipComponent(props: WGChipProps) {
     <View>
       <HStack space={3} flexWrap={'wrap'}>
         {data.map((item, index) => (
-          <HStack key={index} rounded={'full'} space={1} bg={'white'} p={1} pr={2}>
+          <HStack mt={2} key={index} rounded={'full'} space={1} bg={'white'} p={1} pr={2}>
             <Avatar
               size={'xs'}
               bg="green.500"

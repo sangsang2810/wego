@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, Text, View, ImageBackground } from 'react-native';
 import Tabs from './src/navigation/Tabs';
 import { Box, extendTheme, NativeBaseProvider } from 'native-base';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import OnBoardingScreen from './src/authentication/index';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -57,11 +57,19 @@ const theme = extendTheme({
   config: {},
 });
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'transparent',
+  },
+};
+
 export default function App() {
   return (
     <Provider store={store}>
       <NativeBaseProvider config={config} theme={theme}>
-        <NavigationContainer>
+        <NavigationContainer theme={MyTheme}>
           <Box
             bg={{
               linearGradient: {

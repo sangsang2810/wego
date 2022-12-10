@@ -10,17 +10,18 @@ export type TripModel = {
   deposit: string;
   locations: TimeLineModel[];
   province: DropdownModel;
+  createAt: Date;
   transport: {
     vehicle: DropdownModel;
-    start: {
+    depart: {
       date: Date;
-      from: Date;
-      to: Date;
+      time: Date;
+      locate: string;
     };
-    end: {
+    return: {
       date: Date;
-      from: Date;
-      to: Date;
+      time: Date;
+      locate: string;
     };
   };
 };

@@ -37,7 +37,7 @@ const WGDropdownComponent = (props: WGDropdownProps) => {
         valueField="value"
         imageField="image"
         placeholder={!isFocus ? plcHolder : '...'}
-        searchPlaceholder="Tìm ở đây nha..."
+        searchPlaceholder={!isFocus ? plcHolder : 'Chọn đi'}
         value={ddlValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}

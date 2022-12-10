@@ -24,7 +24,7 @@ import {
   WGFormControlComponent,
   WGDateTimePickerComponent,
 } from '../../../libs';
-import { ASSETS_ENUM, MESSAGES_ENUM, PLAN_ENUM } from '../../../utils/enums';
+import { ASSETS_ENUM, MESSAGES_ENUM, PLAN_ENUM, TRANSPORT_ENUM } from '../../../utils/enums';
 import { ImagePickerService, ProvinceService, ToastService } from '../../../services';
 import CreateMStoneComponent from './CreateMStone.component';
 import { createTrip } from '../TripSlice';
@@ -78,6 +78,7 @@ function PlanCreateTripScreen(props) {
     leader: '',
     linkInvite: 'link.ne.com',
     deposit: '',
+    createAt: new Date(),
     province: {
       label: '',
       value: '',
@@ -91,15 +92,15 @@ function PlanCreateTripScreen(props) {
           uri: '',
         },
       },
-      start: {
+      depart: {
         date: new Date(),
-        from: new Date(),
-        to: new Date(),
+        time: new Date(),
+        locate: '',
       },
-      end: {
+      return: {
         date: new Date(),
-        from: new Date(),
-        to: new Date(),
+        time: new Date(),
+        locate: '',
       },
     },
   });
@@ -162,6 +163,16 @@ function PlanCreateTripScreen(props) {
   };
 
   const handleDropdownChange = (item, name) => {
+    if (name.includes('depart') || name.includes('return')) {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          [name]: item,
+        },
+      });
+    }
+
     if (name === 'vehicle') {
       setFormData({
         ...formData,
@@ -177,6 +188,145 @@ function PlanCreateTripScreen(props) {
       });
     }
   };
+
+  const onChangeDate = (selectedDate, name) => {
+    if (name === 'depart') {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          depart: {
+            ...formData.transport.depart,
+            date: selectedDate,
+          },
+        },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          return: {
+            ...formData.transport.return,
+            date: selectedDate,
+          },
+        },
+      });
+    }
+  };
+
+  const onChangeTime = (selectedTime, name) => {
+    if (name === 'depart') {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          depart: {
+            ...formData.transport.depart,
+            time: selectedTime,
+          },
+        },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          return: {
+            ...formData.transport.return,
+            time: selectedTime,
+          },
+        },
+      });
+    }
+  };
+
+  const renderByTransport = (transportCode: string) => (
+    <HStack>
+      <Box pr={1} w={'1/2'}>
+        <Text>Khởi hành</Text>
+        <VStack space={2}>
+          <WGDateTimePickerComponent
+            mode="dateTime"
+            date={formData?.transport?.depart?.date}
+            time={formData.transport.depart.time}
+            dateCallBack={(value) => onChangeDate(value, 'depart')}
+            timeCallBack={(value) => onChangeTime(value, 'depart')}
+          />
+          {transportCode === TRANSPORT_ENUM.FLIGHT.code ? (
+            <WGDropdownComponent
+              data={DROPDOWN_ENUM.AIRPORT_DDL_DATA}
+              type={'default'}
+              placeholder={'Chọn sân bay'}
+              fieldName={'depart.locate'}
+              ddlValue={formData?.transport.depart.locate}
+              onDropdownChange={handleDropdownChange}
+            />
+          ) : (
+            <Input
+              placeholder="Điểm xuất phát"
+              fontSize={'md'}
+              variant="filled"
+              value={formData?.transport.depart.locate}
+              onChangeText={(value) =>
+                setFormData({
+                  ...formData,
+                  transport: {
+                    ...formData.transport,
+                    depart: {
+                      ...formData.transport.depart,
+                      locate: value,
+                    },
+                  },
+                })
+              }
+            />
+          )}
+        </VStack>
+      </Box>
+      <Box pl={1} w={'1/2'}>
+        <Text>Trở về</Text>
+        <VStack space={2}>
+          <WGDateTimePickerComponent
+            mode="dateTime"
+            date={formData?.transport?.return?.date}
+            time={formData.transport.return.time}
+            dateCallBack={(value) => onChangeDate(value, 'return')}
+            timeCallBack={(value) => onChangeTime(value, 'return')}
+          />
+          {transportCode === TRANSPORT_ENUM.FLIGHT.code ? (
+            <WGDropdownComponent
+              data={DROPDOWN_ENUM.AIRPORT_DDL_DATA}
+              type={'default'}
+              fieldName={'return.locate'}
+              placeholder={'Chọn sân bay'}
+              ddlValue={formData?.transport.vehicle.value}
+              onDropdownChange={handleDropdownChange}
+            />
+          ) : (
+            <Input
+              placeholder="Điểm xuất phát"
+              fontSize={'md'}
+              variant="filled"
+              value={formData?.transport.return.locate}
+              onChangeText={(value) =>
+                setFormData({
+                  ...formData,
+                  transport: {
+                    ...formData.transport,
+                    return: {
+                      ...formData.transport.depart,
+                      locate: value,
+                    },
+                  },
+                })
+              }
+            />
+          )}
+        </VStack>
+      </Box>
+    </HStack>
+  );
 
   const renderCell = (title: string) => {
     let cell;
@@ -212,58 +362,18 @@ function PlanCreateTripScreen(props) {
         cell = (
           <VStack space={3}>
             <WGDropdownComponent
-            data={DROPDOWN_ENUM.VEHICLE_DDL_DATA}
-            type={'image'}
-            fieldName={'vehicle'}
-            ddlValue={formData?.transport.vehicle.value}
-            onDropdownChange={handleDropdownChange}
-          />
-           <HStack>
-
-           <Box pr={1} w={'1/2'}>
-           <Text>Khởi hành</Text>
-            <VStack space={2}>
-            <WGDateTimePickerComponent
-              mode="dateTime"
-              // date={locationForm.date}
-              // time={locationForm.time}
-              // dateCallBack={onChangeDate}
-              // timeCallBack={onChangeTime}
-            />  
-            
-            <Input
-              placeholder="From"
-              variant="filled"
-              bg={'white:alpha.80'}
-              fontSize={'md'}
-              value={'Tân Sơn Nhất'}
+              data={DROPDOWN_ENUM.VEHICLE_DDL_DATA}
+              type={'image'}
+              fieldName={'vehicle'}
+              ddlValue={formData?.transport.vehicle.value}
+              onDropdownChange={handleDropdownChange}
             />
-            </VStack>
-              
-           </Box>
-           <Box pl={1} w={'1/2'}>
-           <Text>Đi về</Text>
-           <VStack space={2}>
-            <WGDateTimePickerComponent
-              mode="dateTime"
-              // date={locationForm.date}
-              // time={locationForm.time}
-              // dateCallBack={onChangeDate}
-              // timeCallBack={onChangeTime}
-            />  
-            
-            <Input
-              placeholder="From"
-              variant="filled"
-              bg={'white:alpha.80'}
-              fontSize={'md'}
-              value={'Tân Sơn Nhất'}
-            />
-            </VStack>
-              
-           </Box>
 
-           </HStack>
+            {formData?.transport.vehicle.value ? (
+              renderByTransport(formData?.transport.vehicle.value)
+            ) : (
+              <></>
+            )}
           </VStack>
         );
         break;

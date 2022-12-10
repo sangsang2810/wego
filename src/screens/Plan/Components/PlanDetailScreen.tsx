@@ -18,6 +18,7 @@ import { LogBox, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   WGBackgroundComponent,
+  WGChipComponent,
   WGFormComponent,
   WGHeader,
   WGTabTimeLine,
@@ -25,6 +26,9 @@ import {
 } from '../../../libs';
 import { ASSETS_ENUM, SCREEN_ENUMS } from '../../../utils/enums';
 import { configRouteByTripId } from '../TripSlice';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface PlanDetailProps {
   route: any;
@@ -42,6 +46,8 @@ function PlanDetailScreen(props: PlanDetailProps) {
     },
     navigation,
   } = props;
+
+  const CELLS = ['Thông tin chuyến đi', 'Khởi hành', 'Thành viên', 'Lộ trình'];
 
   const tripData = useSelector((state: RootState) =>
     state.trips.find((trip) => trip.id === tripId)
@@ -68,59 +74,126 @@ function PlanDetailScreen(props: PlanDetailProps) {
     </Box>
   );
 
-  const temp = [
+  const infoItem = (type: string, content: string, color: string) => {
+    let icon;
+    switch (type) {
+      case 'day':
+        icon = <FontAwesome5 name="calendar-day" size={24} color="white" />;
+        break;
+      case 'weather':
+        icon = <FontAwesome5 name="cloud" size={20} color="white" />;
+        break;
+      case 'status':
+        icon = <MaterialIcons name="pending" size={32} color="white" />;
+        break;
+      case 'clock':
+      default:
+        icon = <FontAwesome5 name="hourglass-start" size={22} color="white" />;
+        break;
+    }
+    return (
+      <VStack alignItems={'center'} rounded={'md'} h={'24'} w={'20'} bg={'white'}>
+        <View rounded={'md'} alignItems={'center'} justifyContent={'center'} h={'2/3'} w={'full'}>
+          <View
+            rounded={'full'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            w={12}
+            h={12}
+            bgColor={color}
+          >
+            {icon}
+          </View>
+        </View>
+        <Text>{content}</Text>
+      </VStack>
+    );
+  };
+
+  const infoItemList = [
     {
-      key: 'go',
-      tabTitle: 'Lúc đi',
-      tabView: (
-        <>
-          <TransportMode />
-        </>
-      ),
+      type: 'day',
+      content: '28/10',
+      color: '#ECC5FB',
     },
     {
-      key: 'return',
-      tabTitle: 'Lúc về',
-      tabView: (
-        <>
-          <TransportMode />
-        </>
-      ),
+      type: 'weather',
+      content: 'Mưa',
+      color: '#A7C5EB',
+    },
+    {
+      type: 'clock',
+      content: '134 days',
+      color: '#FFDBA4',
+    },
+    {
+      type: 'status',
+      content: 'Waiting',
+      color: '#C2DED1',
     },
   ];
 
-  const temp2 = [
-    {
-      key: 'day1',
-      tabTitle: '17/09',
-      tabView: (
-        <>
-          <WGTimeLineComponent />
-        </>
-      ),
-    },
-    {
-      key: 'day2',
-      tabTitle: '18/09',
-      tabView: (
-        <>
-          <WGTimeLineComponent />
-        </>
-      ),
-    },
-    {
-      key: 'day3',
-      tabTitle: '19/09',
-      tabView: (
-        <>
-          <WGTimeLineComponent />
-        </>
-      ),
-    },
-  ];
+  const renderCells = (cellName: string) => {
+    let cell;
+    switch (cellName) {
+      case 'Thành viên':
+        cell = (
+          <View>
+            <VStack space={4}>
+              <View>
+                <Text>Trưởng đoàn</Text>
+                <WGChipComponent data={[{ name: 'Trần Hạo Nam' }]} />
+              </View>
+              <View>
+                <Text>Thành Viên</Text>
+                <WGChipComponent
+                  data={[
+                    { name: 'Trần Hạo Nam' },
+                    { name: 'Trần Hạo Nam' },
+                    { name: 'Trần Hạo Nam' },
+                    { name: 'Trần Hạo Nam' },
+                  ]}
+                />
+              </View>
+            </VStack>
+          </View>
+        );
+        break;
+      case 'Khởi hành':
+        cell = (
+          <View>
+            <Text>Khởi hành</Text>
+          </View>
+        );
+        break;
+      case 'Lộ trình':
+        cell = (
+          <View h={routes ? '80' : '16'}>
+            {routes ? (
+              <WGTabTimeLine routes={routes} />
+            ) : (
+              <Center h={'full'}>
+                <Text fontWeight={'bold'}>Chưa có lịch trình gì hết !!! </Text>
+                <Text>Tạo chuyến đi ở phần "Thêm địa điểm"</Text>
+              </Center>
+            )}
+          </View>
+        );
+        break;
+      case 'Thông tin chuyến đi':
+      default:
+        cell = (
+          <HStack justifyContent={'space-between'}>
+            {infoItemList.map(({ type, content, color }) => infoItem(type, content, color))}
+          </HStack>
+        );
+        break;
+    }
+    return cell;
+  };
 
   return (
-    <Box style={{ flex: 1 }}>
+    <Box flex={1}>
       <WGHeader
         isDisplayRight={false}
         isDisplayLeft={true}
@@ -130,7 +203,7 @@ function PlanDetailScreen(props: PlanDetailProps) {
       <ScrollView
         horizontal={false}
         style={styles.scrollView}
-        contentContainerStyle={{ flexGrow: 1 }}
+        // contentContainerStyle={{ flexGrow: 1 }}
         rounded="lg"
       >
         <Box>
@@ -171,87 +244,20 @@ function PlanDetailScreen(props: PlanDetailProps) {
                   />
                 </View>
                 <Text fontSize="sm" color="white" fontWeight="500">
-                  {tripData?.province}
+                  {tripData?.province.label}
                 </Text>
               </HStack>
             </LinearGradient>
           </VStack>
         </Box>
 
-        {/* <View h={180} p={3}>
-          <WGTabTimeLine routes={temp} />
-        </View> */}
-
-        <Box px={4} pt={4}>
-          <VStack space={5}>
-            <WGFormComponent title={'Thông tin chuyến đi'}>
-              <Text>hello</Text>
+        <VStack mt={5} px={5} space={3}>
+          {CELLS.map((item, index) => (
+            <WGFormComponent key={index} title={item}>
+              {renderCells(item)}
             </WGFormComponent>
-
-            <View p={3} bgColor="white" rounded={'md'}>
-              <Heading size="md" ml="-1">
-                Đặt cọc & Thành viên
-              </Heading>
-              <HStack p={3} pb="0" bg="red" justifyContent="space-between">
-                <Text fontSize="lg" fontWeight={'semibold'} color={'violet.700'}>
-                  500k
-                </Text>
-                <Avatar.Group
-                  _avatar={{
-                    size: 'sm',
-                  }}
-                  max={3}
-                >
-                  <Avatar
-                    bg="green.500"
-                    source={{
-                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                    }}
-                  >
-                    A2
-                  </Avatar>
-                  <Avatar
-                    bg="green.500"
-                    source={{
-                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                    }}
-                  >
-                    A1
-                  </Avatar>
-                  <Avatar
-                    bg="green.500"
-                    source={{
-                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                    }}
-                  >
-                    A3
-                  </Avatar>
-                  <Avatar
-                    bg="green.500"
-                    source={{
-                      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-                    }}
-                  >
-                    A4
-                  </Avatar>
-                </Avatar.Group>
-              </HStack>
-            </View>
-
-            <WGFormComponent title="Lộ trình">
-              <View h={routes ? '80' : '16'}>
-                {routes ? (
-                  <WGTabTimeLine routes={routes} />
-                ) : (
-                  <Center h={'full'}>
-                    <Text fontWeight={'bold'}>Chưa có lịch trình gì hết !!! </Text>
-                    <Text>Tạo chuyến đi ở phần "Thêm địa điểm"</Text>
-                  </Center>
-                )}
-              </View>
-            </WGFormComponent>
-          </VStack>
-        </Box>
+          ))}
+        </VStack>
       </ScrollView>
     </Box>
   );

@@ -80,7 +80,7 @@ function WGBigCardComponent(props: WGBigCardProps) {
                     />
                   </View>
                   <Text fontSize="sm" color={'violet.500'} fontWeight="500">
-                    {data?.province}
+                    {data?.province.label}
                   </Text>
                 </HStack>
               </Stack>
