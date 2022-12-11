@@ -1,20 +1,26 @@
-import { Text, View } from 'native-base';
+import { Box, Text, View } from 'native-base';
 import * as React from 'react';
 import { Dimensions, LogBox, StyleSheet } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { WGTimeLineComponent } from '../wg-timeline';
 
-interface WGTab {
-  routes?: any;
+type WGTabModel = {
+  routes?: routeConfig[];
 }
 
 interface routeConfig {
   // key is unique
   key: string;
   tabTitle: string;
+  view: any;
 }
 
-function WGTab(props: WGTab) {
+function WGTab(props: WGTabModel) {
+  
+  const [index, setIndex] = React.useState(0);
+  const [routes, setRoutes] = React.useState<{ key: string; title: string }[]>([]);
+  const [scene, setScene] = React.useState<any>({});
+
   const initialLayout = {
     width: Dimensions.get('window').width,
   };
@@ -27,13 +33,13 @@ function WGTab(props: WGTab) {
     const object = props.routes;
     for (const property in object) {
       if (Object.prototype.hasOwnProperty.call(object, property)) {
-        const { key, tabTitle, locations } = object[property];
+        const { key, tabTitle, view } = object[property];
         routeSetting.push({ key, title: tabTitle });
         Object.assign(sceneSetting, {
           [key]: () => (
-            <View>
-              <WGTimeLineComponent data={locations} />
-            </View>
+            <>
+             {view} 
+            </>
           ),
         });
       }
@@ -42,9 +48,6 @@ function WGTab(props: WGTab) {
     setScene(sceneSetting);
   }, [props]);
 
-  const [index, setIndex] = React.useState(0);
-  const [routes, setRoutes] = React.useState<{ key: string; title: string }[]>([]);
-  const [scene, setScene] = React.useState<any>({});
 
   const renderScene = SceneMap(scene);
 
@@ -62,13 +65,13 @@ function WGTab(props: WGTab) {
   );
 
   return (
-    <TabView
+      <TabView
       navigationState={{ index, routes }}
       renderScene={renderScene}
       renderTabBar={renderTabBar}
       onIndexChange={setIndex}
       initialLayout={initialLayout}
-      style={styles.tabView}
+      // style={styles.tabView}
     />
   );
 }
@@ -86,6 +89,6 @@ const styles = StyleSheet.create({
   },
   tabView: {
     borderRadius: 5,
-    flex: 1,
+    flex:1,
   },
 });

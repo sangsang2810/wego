@@ -163,12 +163,28 @@ function PlanCreateTripScreen(props) {
   };
 
   const handleDropdownChange = (item, name) => {
-    if (name.includes('depart') || name.includes('return')) {
+    if (name.includes('depart') ) {
       setFormData({
         ...formData,
         transport: {
           ...formData.transport,
-          [name]: item,
+          depart: {
+            ...formData.transport.depart,
+          locate: item,
+          }
+        },
+      });
+    }
+
+    if ( name.includes('return')) {
+      setFormData({
+        ...formData,
+        transport: {
+          ...formData.transport,
+          return: {
+            ...formData.transport.return,
+            locate: item,
+          }
         },
       });
     }
@@ -258,7 +274,7 @@ function PlanCreateTripScreen(props) {
               data={DROPDOWN_ENUM.AIRPORT_DDL_DATA}
               type={'default'}
               placeholder={'Chọn sân bay'}
-              fieldName={'depart.locate'}
+              fieldName={'depart'}
               ddlValue={formData?.transport.depart.locate}
               onDropdownChange={handleDropdownChange}
             />
@@ -298,7 +314,7 @@ function PlanCreateTripScreen(props) {
             <WGDropdownComponent
               data={DROPDOWN_ENUM.AIRPORT_DDL_DATA}
               type={'default'}
-              fieldName={'return.locate'}
+              fieldName={'return'}
               placeholder={'Chọn sân bay'}
               ddlValue={formData?.transport.vehicle.value}
               onDropdownChange={handleDropdownChange}

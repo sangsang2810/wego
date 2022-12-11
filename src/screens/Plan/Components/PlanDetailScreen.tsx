@@ -21,12 +21,11 @@ import {
   WGChipComponent,
   WGFormComponent,
   WGHeader,
+  WGTab,
   WGTabTimeLine,
-  WGTimeLineComponent,
 } from '../../../libs';
 import { ASSETS_ENUM, SCREEN_ENUMS } from '../../../utils/enums';
 import { configRouteByTripId } from '../TripSlice';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -52,10 +51,10 @@ function PlanDetailScreen(props: PlanDetailProps) {
   const tripData = useSelector((state: RootState) =>
     state.trips.find((trip) => trip.id === tripId)
   );
+  console.log('tripData', tripData);
+  
 
   const routes = useSelector((state: RootState) => configRouteByTripId(state, tripId));
-
-  console.log('PlanDetailScreen', tripData);
 
   const TransportMode = () => (
     <Box bg="white" p={3} roundedBottomLeft="md" roundedBottomRight={'md'}>
@@ -133,6 +132,18 @@ function PlanDetailScreen(props: PlanDetailProps) {
     },
   ];
 
+  const sample = [
+    {
+      key: 'tab-1',
+      tabTitle: 'Khởi hành',
+      view: (TransportMode()),
+    },{
+      key: 'tab-2',
+      tabTitle: 'Đi về',
+      view: (<Text>Hello</Text>),
+    }
+  ]
+
   const renderCells = (cellName: string) => {
     let cell;
     switch (cellName) {
@@ -161,8 +172,8 @@ function PlanDetailScreen(props: PlanDetailProps) {
         break;
       case 'Khởi hành':
         cell = (
-          <View>
-            <Text>Khởi hành</Text>
+          <View h={'40'}>
+            <WGTab routes={sample} />
           </View>
         );
         break;
