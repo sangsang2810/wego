@@ -6,7 +6,7 @@ import { WGTimeLineComponent } from '../wg-timeline';
 
 type WGTabModel = {
   routes?: routeConfig[];
-}
+};
 
 interface routeConfig {
   // key is unique
@@ -15,8 +15,7 @@ interface routeConfig {
   view: any;
 }
 
-function WGTab(props: WGTabModel) {
-  
+const WGTab = (props: WGTabModel) => {
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState<{ key: string; title: string }[]>([]);
   const [scene, setScene] = React.useState<any>({});
@@ -27,27 +26,26 @@ function WGTab(props: WGTabModel) {
 
   React.useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    settingScene();
+  }, [props.routes]);
 
+  const settingScene = () => {
     let routeSetting: { key: string; title: string }[] = [];
     let sceneSetting = {};
+
     const object = props.routes;
     for (const property in object) {
       if (Object.prototype.hasOwnProperty.call(object, property)) {
         const { key, tabTitle, view } = object[property];
         routeSetting.push({ key, title: tabTitle });
         Object.assign(sceneSetting, {
-          [key]: () => (
-            <>
-             {view} 
-            </>
-          ),
+          [key]: () => <View>{view}</View>,
         });
       }
     }
     setRoutes(routeSetting);
     setScene(sceneSetting);
-  }, [props]);
-
+  };
 
   const renderScene = SceneMap(scene);
 
@@ -65,16 +63,17 @@ function WGTab(props: WGTabModel) {
   );
 
   return (
-      <TabView
+    <TabView
       navigationState={{ index, routes }}
       renderScene={renderScene}
       renderTabBar={renderTabBar}
       onIndexChange={setIndex}
       initialLayout={initialLayout}
-      // style={styles.tabView}
+      sceneContainerStyle={{ overflow: 'visible' }}
+      style={styles.tabView}
     />
   );
-}
+};
 export default React.memo(WGTab);
 
 const styles = StyleSheet.create({
@@ -88,7 +87,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   tabView: {
-    borderRadius: 5,
-    flex:1,
+    flex: 1,
   },
 });

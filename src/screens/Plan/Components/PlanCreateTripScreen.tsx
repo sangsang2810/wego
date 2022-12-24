@@ -163,20 +163,26 @@ function PlanCreateTripScreen(props) {
   };
 
   const handleDropdownChange = (item, name) => {
-    if (name.includes('depart') ) {
+    console.log('name', name);
+    console.log('item', item);
+
+    if (name === 'depart') {
       setFormData({
         ...formData,
         transport: {
           ...formData.transport,
           depart: {
             ...formData.transport.depart,
-          locate: item,
-          }
+            locate: item,
+          },
         },
       });
+      console.log('formData', formData);
+      return;
     }
+    console.log('formData', formData);
 
-    if ( name.includes('return')) {
+    if (name === 'return') {
       setFormData({
         ...formData,
         transport: {
@@ -184,9 +190,10 @@ function PlanCreateTripScreen(props) {
           return: {
             ...formData.transport.return,
             locate: item,
-          }
+          },
         },
       });
+      return;
     }
 
     if (name === 'vehicle') {
@@ -265,7 +272,7 @@ function PlanCreateTripScreen(props) {
           <WGDateTimePickerComponent
             mode="dateTime"
             date={formData?.transport?.depart?.date}
-            time={formData.transport.depart.time}
+            time={formData.transport.depart?.time}
             dateCallBack={(value) => onChangeDate(value, 'depart')}
             timeCallBack={(value) => onChangeTime(value, 'depart')}
           />
@@ -275,7 +282,7 @@ function PlanCreateTripScreen(props) {
               type={'default'}
               placeholder={'Chọn sân bay'}
               fieldName={'depart'}
-              ddlValue={formData?.transport.depart.locate}
+              ddlValue={formData?.transport.depart.locate.value}
               onDropdownChange={handleDropdownChange}
             />
           ) : (
@@ -283,7 +290,7 @@ function PlanCreateTripScreen(props) {
               placeholder="Điểm xuất phát"
               fontSize={'md'}
               variant="filled"
-              value={formData?.transport.depart.locate}
+              value={formData?.transport.depart.locate.label}
               onChangeText={(value) =>
                 setFormData({
                   ...formData,
@@ -291,7 +298,7 @@ function PlanCreateTripScreen(props) {
                     ...formData.transport,
                     depart: {
                       ...formData.transport.depart,
-                      locate: value,
+                      locate: { value: 'custom', label: value },
                     },
                   },
                 })
@@ -324,15 +331,15 @@ function PlanCreateTripScreen(props) {
               placeholder="Điểm xuất phát"
               fontSize={'md'}
               variant="filled"
-              value={formData?.transport.return.locate}
+              value={formData?.transport.return.locate.label}
               onChangeText={(value) =>
                 setFormData({
                   ...formData,
                   transport: {
                     ...formData.transport,
                     return: {
-                      ...formData.transport.depart,
-                      locate: value,
+                      ...formData.transport.return,
+                      locate: { value: 'custom', label: value },
                     },
                   },
                 })

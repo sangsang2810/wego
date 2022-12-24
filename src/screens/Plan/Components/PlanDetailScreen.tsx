@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Center,
+  Flex,
   Heading,
   HStack,
   Image,
@@ -28,7 +29,7 @@ import { ASSETS_ENUM, SCREEN_ENUMS } from '../../../utils/enums';
 import { configRouteByTripId } from '../TripSlice';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { AntDesign } from '@expo/vector-icons';
 interface PlanDetailProps {
   route: any;
   navigation: any;
@@ -48,30 +49,82 @@ function PlanDetailScreen(props: PlanDetailProps) {
 
   const CELLS = ['Thông tin chuyến đi', 'Khởi hành', 'Thành viên', 'Lộ trình'];
 
+  // * get data
   const tripData = useSelector((state: RootState) =>
     state.trips.find((trip) => trip.id === tripId)
   );
-  console.log('tripData', tripData);
-  
-
   const routes = useSelector((state: RootState) => configRouteByTripId(state, tripId));
 
-  const TransportMode = () => (
-    <Box bg="white" p={3} roundedBottomLeft="md" roundedBottomRight={'md'}>
-      <VStack>
-        <HStack justifyContent={'space-between'}>
-          <Text fontSize="sm" color={'gray.400'}>
-            Số vé: KB434
-          </Text>
-          <Text fontSize="sm">Ngày đi/về</Text>
+  const TransportDetail = (type: 'depart' | 'return') => {
+    const { transport } = tripData;
+
+    let data;
+
+    if (type === 'depart') {
+      data = transport.depart;
+    } else {
+      data = transport.return;
+    }
+
+    const weekday = new Date(data?.date).toLocaleDateString('en-us', {
+      weekday: 'long',
+    });
+    const date = new Date(data?.date);
+    const monthYear = new Date(data?.date).toLocaleDateString('en-us', {
+      year: '2-digit',
+      month: 'short',
+    });
+    const time = new Date(data?.time);
+
+    return (
+      <View h={'full'} bg="white" roundedBottomLeft="md" roundedBottomRight={'md'}>
+        <HStack h={'full'}>
+          <Flex
+            height={'full'}
+            width={'1/4'}
+            justifyContent="center"
+            bg={'#ECC5FB'}
+            alignItems={'center'}
+            roundedBottomLeft="md"
+            roundedBottomRight={'md'}
+          >
+            <Text color={'white'}>{weekday}</Text>
+            <Text color={'white'} fontSize={'3xl'}>
+              {date.getDate()}
+            </Text>
+            <Text color={'white'}>{monthYear}</Text>
+          </Flex>
+
+          <View width={'3/4'} p={3}>
+            <HStack justifyContent={'space-between'}>
+              <Text fontSize="sm" color={'gray.400'}>
+                Khởi hành lúc: {time.getHours()} giờ {time.getMinutes()} phút
+              </Text>
+            </HStack>
+            <HStack space="3" justifyContent={'space-between'}>
+              <Text fontSize={'sm'}>{data?.locate.label}</Text>
+              <Text fontSize={'sm'}>{transport.return?.locate.label}</Text>
+            </HStack>
+            <HStack space="3" justifyContent={'space-between'}>
+              <Text fontWeight={'bold'} fontSize={'lg'}>
+                {data?.locate.value}
+              </Text>
+              <Text fontSize={'lg'}>
+                - - - -{' '}
+                <View mt={2}>
+                  <MaterialIcons name="airplanemode-active" size={22} color="black" />
+                </View>{' '}
+                - - - - -
+              </Text>
+              <Text fontWeight={'bold'} fontSize={'lg'}>
+                {transport.return?.locate.value}
+              </Text>
+            </HStack>
+          </View>
         </HStack>
-        <HStack py={5} space="3" alignItems="center">
-          <Text fontSize="md">Icon</Text>
-          <Text fontSize="md">Sài Gòn - Đà Nẵng</Text>
-        </HStack>
-      </VStack>
-    </Box>
-  );
+      </View>
+    );
+  };
 
   const infoItem = (type: string, content: string, color: string) => {
     let icon;
@@ -136,13 +189,14 @@ function PlanDetailScreen(props: PlanDetailProps) {
     {
       key: 'tab-1',
       tabTitle: 'Khởi hành',
-      view: (TransportMode()),
-    },{
+      view: TransportDetail('depart'),
+    },
+    {
       key: 'tab-2',
       tabTitle: 'Đi về',
-      view: (<Text>Hello</Text>),
-    }
-  ]
+      view: TransportDetail('return'),
+    },
+  ];
 
   const renderCells = (cellName: string) => {
     let cell;
@@ -172,7 +226,7 @@ function PlanDetailScreen(props: PlanDetailProps) {
         break;
       case 'Khởi hành':
         cell = (
-          <View h={'40'}>
+          <View h={'48'}>
             <WGTab routes={sample} />
           </View>
         );
@@ -210,13 +264,7 @@ function PlanDetailScreen(props: PlanDetailProps) {
         isDisplayLeft={true}
         title={SCREEN_ENUMS.PLAN_DETAILS.name}
       />
-      {/* <View w={'full'}></View> */}
-      <ScrollView
-        horizontal={false}
-        style={styles.scrollView}
-        // contentContainerStyle={{ flexGrow: 1 }}
-        rounded="lg"
-      >
+      <ScrollView h="80" horizontal={false} style={styles.scrollView} rounded="lg">
         <Box>
           <AspectRatio w="100%" ratio={16 / 15}>
             <Image
@@ -262,13 +310,15 @@ function PlanDetailScreen(props: PlanDetailProps) {
           </VStack>
         </Box>
 
-        <VStack mt={5} px={5} space={3}>
-          {CELLS.map((item, index) => (
-            <WGFormComponent key={index} title={item}>
-              {renderCells(item)}
-            </WGFormComponent>
-          ))}
-        </VStack>
+        <View h={'full'} mt={5} px={5}>
+          <VStack space={3}>
+            {CELLS.map((item, index) => (
+              <WGFormComponent key={index} title={item}>
+                {renderCells(item)}
+              </WGFormComponent>
+            ))}
+          </VStack>
+        </View>
       </ScrollView>
     </Box>
   );
@@ -276,6 +326,7 @@ function PlanDetailScreen(props: PlanDetailProps) {
 const styles = StyleSheet.create({
   scrollView: {
     marginBottom: 65,
+    // flex: 1,
   },
 });
 

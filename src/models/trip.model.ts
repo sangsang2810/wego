@@ -16,12 +16,12 @@ export type TripModel = {
     depart: {
       date: Date;
       time: Date;
-      locate: string;
+      locate: DropdownModel;
     };
     return: {
       date: Date;
       time: Date;
-      locate: string;
+      locate: DropdownModel;
     };
   };
 };

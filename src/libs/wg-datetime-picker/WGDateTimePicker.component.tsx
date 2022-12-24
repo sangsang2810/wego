@@ -43,7 +43,7 @@ function WGDateTimePickerComponent(props: DateTimePickerProps) {
         mode={'time'}
         is24Hour={true}
         onChange={onChangeTime}
-        minimumDate={new Date()}
+        // minimumDate={new Date()}
       />
     );
   };
