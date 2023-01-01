@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Center,
+  Divider,
   Flex,
   Heading,
   HStack,
@@ -15,7 +16,7 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
-import { LogBox, StyleSheet } from 'react-native';
+import { ImageBackground, LogBox, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   WGBackgroundComponent,
@@ -25,7 +26,7 @@ import {
   WGTab,
   WGTabTimeLine,
 } from '../../../libs';
-import { ASSETS_ENUM, SCREEN_ENUMS } from '../../../utils/enums';
+import { ASSETS_ENUM, SCREEN_ENUMS, TRANSPORT_ENUM } from '../../../utils/enums';
 import { configRouteByTripId } from '../TripSlice';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -47,7 +48,7 @@ function PlanDetailScreen(props: PlanDetailProps) {
     navigation,
   } = props;
 
-  const CELLS = ['Thông tin chuyến đi', 'Khởi hành', 'Thành viên', 'Lộ trình'];
+  const CELLS = ['Thông tin chuyến đi', 'Đặt cọc', 'Khởi hành', 'Thành viên', 'Lộ trình'];
 
   // * get data
   const tripData = useSelector((state: RootState) =>
@@ -57,33 +58,48 @@ function PlanDetailScreen(props: PlanDetailProps) {
 
   const TransportDetail = (type: 'depart' | 'return') => {
     const { transport } = tripData;
-
+    let fromLocate;
+    let toLocate;
     let data;
 
     if (type === 'depart') {
       data = transport.depart;
+      fromLocate = transport.depart;
+      toLocate = transport.return;
     } else {
       data = transport.return;
+      toLocate = transport.depart;
+      fromLocate = transport.return;
     }
 
-    const weekday = new Date(data?.date).toLocaleDateString('en-us', {
+    const weekday = new Date(data?.date).toLocaleDateString('vi-vn', {
       weekday: 'long',
     });
     const date = new Date(data?.date);
-    const monthYear = new Date(data?.date).toLocaleDateString('en-us', {
-      year: '2-digit',
-      month: 'short',
+    const monthYear = new Date(data?.date).toLocaleDateString('vi-vn', {
+      month: 'long',
     });
     const time = new Date(data?.time);
 
     return (
-      <View h={'full'} bg="white" roundedBottomLeft="md" roundedBottomRight={'md'}>
+      <Box
+        h={'full'}
+        bg={{
+          linearGradient: {
+            colors: ['#6364F4', '#FC5C7D'],
+            start: [0, 0],
+            end: [1, 0],
+          },
+        }}
+        roundedBottomLeft="md"
+        roundedBottomRight={'md'}
+      >
         <HStack h={'full'}>
           <Flex
             height={'full'}
             width={'1/4'}
             justifyContent="center"
-            bg={'#ECC5FB'}
+            // bg={'#ECC5FB'}
             alignItems={'center'}
             roundedBottomLeft="md"
             roundedBottomRight={'md'}
@@ -95,34 +111,63 @@ function PlanDetailScreen(props: PlanDetailProps) {
             <Text color={'white'}>{monthYear}</Text>
           </Flex>
 
-          <View width={'3/4'} p={3}>
-            <HStack justifyContent={'space-between'}>
-              <Text fontSize="sm" color={'gray.400'}>
-                Khởi hành lúc: {time.getHours()} giờ {time.getMinutes()} phút
+          <Divider orientation="vertical" thickness="2" bg={'white'} />
+
+          <View width={'3/4'} pt={3} p={3}>
+            <VStack space={3}>
+              <Text textAlign={'center'} fontSize="sm" color={'white'}>
+                {time.getHours()} giờ {time.getMinutes()} phút
               </Text>
-            </HStack>
-            <HStack space="3" justifyContent={'space-between'}>
-              <Text fontSize={'sm'}>{data?.locate.label}</Text>
-              <Text fontSize={'sm'}>{transport.return?.locate.label}</Text>
-            </HStack>
-            <HStack space="3" justifyContent={'space-between'}>
-              <Text fontWeight={'bold'} fontSize={'lg'}>
-                {data?.locate.value}
-              </Text>
-              <Text fontSize={'lg'}>
-                - - - -{' '}
-                <View mt={2}>
-                  <MaterialIcons name="airplanemode-active" size={22} color="black" />
-                </View>{' '}
-                - - - - -
-              </Text>
-              <Text fontWeight={'bold'} fontSize={'lg'}>
-                {transport.return?.locate.value}
-              </Text>
-            </HStack>
+
+              {transport.vehicle.value === TRANSPORT_ENUM.FLIGHT.code ? (
+                <>
+                  <View>
+                    <HStack space="3" justifyContent={'space-between'}>
+                      <Text color={'white'} fontWeight={'bold'} fontSize={'lg'}>
+                        {fromLocate?.locate.value}
+                      </Text>
+                      <Text fontSize={'lg'}>
+                        - - - -{' '}
+                        <View mt={2}>
+                          <MaterialIcons name="airplanemode-active" size={22} color="black" />
+                        </View>{' '}
+                        - - - - {'>'}
+                      </Text>
+                      <Text color={'white'} fontWeight={'bold'} fontSize={'lg'}>
+                        {toLocate?.locate.value}
+                      </Text>
+                    </HStack>
+
+                    <HStack justifyContent={'space-between'}>
+                      <Text color={'gray.300'} fontSize={'xs'}>
+                        {fromLocate?.locate.label}
+                      </Text>
+                      <Text color={'gray.300'} fontSize={'xs'}>
+                        {toLocate?.locate.label}
+                      </Text>
+                    </HStack>
+                    <Text mt={3} color={'white'} fontSize={'xs'}>
+                      * Vui lòng có mặt trước giờ bay 1h
+                    </Text>
+                  </View>
+                </>
+              ) : (
+                <View>
+                  <Text color={'white'} fontSize={'xs'}>
+                    Xuất phát tại:{' '}
+                  </Text>
+                  <Text color={'white'} fontWeight={'semibold'}>
+                    {fromLocate.locate.label}
+                  </Text>
+                  <Text mt={3} color={'white'}>
+                    * Vui lòng đến trước h xuất phát 15p
+                  </Text>
+                </View>
+              )}
+            </VStack>
           </View>
         </HStack>
-      </View>
+      </Box>
     );
   };
 
@@ -213,8 +258,8 @@ function PlanDetailScreen(props: PlanDetailProps) {
                 <Text>Thành Viên</Text>
                 <WGChipComponent
                   data={[
-                    { name: 'Trần Hạo Nam' },
-                    { name: 'Trần Hạo Nam' },
+                    { name: 'NgUYỄN VĂN A' },
+                    { name: 'Trần' },
                     { name: 'Trần Hạo Nam' },
                     { name: 'Trần Hạo Nam' },
                   ]}
@@ -222,6 +267,34 @@ function PlanDetailScreen(props: PlanDetailProps) {
               </View>
             </VStack>
           </View>
+        );
+        break;
+      case 'Đặt cọc':
+        cell = (
+          <Box
+            bg={{
+              linearGradient: {
+                colors: ['#6364F4', '#FC5C7D'],
+                start: [0, 0],
+                end: [1, 0],
+              },
+            }}
+            p="3"
+            rounded="md"
+            _text={{
+              fontSize: 'md',
+              fontWeight: 'medium',
+              color: 'warmGray.50',
+              textAlign: 'center',
+            }}
+          >
+            <Text color={'warmGray.50'} fontSize={'xs'}>
+              Đặt cọc
+            </Text>
+            <Text color={'warmGray.50'} fontWeight={'semibold'} fontSize={'xl'}>
+              {tripData.deposit}
+            </Text>
+          </Box>
         );
         break;
       case 'Khởi hành':
@@ -326,7 +399,6 @@ function PlanDetailScreen(props: PlanDetailProps) {
 const styles = StyleSheet.create({
   scrollView: {
     marginBottom: 65,
-    // flex: 1,
   },
 });
 

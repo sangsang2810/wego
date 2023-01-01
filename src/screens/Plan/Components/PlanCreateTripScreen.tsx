@@ -13,6 +13,7 @@ import {
   useClipboard,
   HStack,
   View,
+  TextArea,
 } from 'native-base';
 import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
@@ -286,7 +287,8 @@ function PlanCreateTripScreen(props) {
               onDropdownChange={handleDropdownChange}
             />
           ) : (
-            <Input
+            <TextArea
+              autoCompleteType={undefined}
               placeholder="Điểm xuất phát"
               fontSize={'md'}
               variant="filled"
@@ -327,7 +329,7 @@ function PlanCreateTripScreen(props) {
               onDropdownChange={handleDropdownChange}
             />
           ) : (
-            <Input
+            <TextArea
               placeholder="Điểm xuất phát"
               fontSize={'md'}
               variant="filled"
@@ -344,6 +346,7 @@ function PlanCreateTripScreen(props) {
                   },
                 })
               }
+              autoCompleteType={undefined}
             />
           )}
         </VStack>
