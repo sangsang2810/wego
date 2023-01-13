@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { DEV_BASE_URL } from '@env';
 
 const axiosClient = axios.create({
-  baseURL: '',
+  baseURL: DEV_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

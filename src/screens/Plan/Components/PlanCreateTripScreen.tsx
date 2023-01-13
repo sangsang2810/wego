@@ -28,7 +28,7 @@ import {
 import { ASSETS_ENUM, MESSAGES_ENUM, PLAN_ENUM, TRANSPORT_ENUM } from '../../../utils/enums';
 import { ImagePickerService, ProvinceService, ToastService } from '../../../services';
 import CreateMStoneComponent from './CreateMStone.component';
-import { createTrip } from '../TripSlice';
+import { createTrip } from '../../../services/Slices/TripSlice';
 
 import { DropdownModel, TripModel } from 'models';
 import { useAppDispatch } from '../../../app/hooks';

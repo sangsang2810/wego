@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import { TripModel } from 'models';
-import { TimeLineService } from '../../services';
+import { TimeLineService } from '..';
 
 const initialState: TripModel[] = [];
 

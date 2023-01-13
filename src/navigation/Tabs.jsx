@@ -46,7 +46,7 @@ function Tabs() {
           // bottom: 20,
           elevation: 0,
           borderRadius: 25,
-          backgroundColor: '#ffffff',
+          // backgroundColor: '#ffffff',
           height: 80,
           ...styles.shadow,
         },

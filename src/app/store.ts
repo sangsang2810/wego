@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import TripReducer from '../screens/Plan/TripSlice';
+import TripReducer from '../services/Slices/TripSlice';
+import AuthReducer from '../services/Slices/AuthSlice';
 
 export const store = configureStore({
   reducer: {
     trips: TripReducer,
+    user: AuthReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>

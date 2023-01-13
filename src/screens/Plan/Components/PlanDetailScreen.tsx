@@ -2,8 +2,8 @@ import { RootState } from 'app/store';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   AspectRatio,
-  Avatar,
   Box,
+  Button,
   Center,
   Divider,
   Flex,
@@ -26,11 +26,13 @@ import {
   WGTab,
   WGTabTimeLine,
 } from '../../../libs';
-import { ASSETS_ENUM, SCREEN_ENUMS, TRANSPORT_ENUM } from '../../../utils/enums';
-import { configRouteByTripId } from '../TripSlice';
+import { ASSETS_ENUM, MESSAGES_ENUM, SCREEN_ENUMS, TRANSPORT_ENUM } from '../../../utils/enums';
+import { configRouteByTripId } from '../../../services/Slices/TripSlice';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import * as MediaLibrary from 'expo-media-library';
+import { ToastService } from '../../../services';
+
 interface PlanDetailProps {
   route: any;
   navigation: any;
@@ -55,6 +57,20 @@ function PlanDetailScreen(props: PlanDetailProps) {
     state.trips.find((trip) => trip.id === tripId)
   );
   const routes = useSelector((state: RootState) => configRouteByTripId(state, tripId));
+
+  const saveImage = async (uri: string) => {
+    try {
+      // Request device storage access permission
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status === 'granted') {
+        // Save image to media library
+        await MediaLibrary.saveToLibraryAsync(uri);
+        ToastService.showToast(MESSAGES_ENUM.DOWNLOAD_QR_SUCCESS, 'dow-qr-code-succ');
+      }
+    } catch (error) {
+      ToastService.showToast(MESSAGES_ENUM.DOWNLOAD_QR_SUCCESS, 'dow-qr-code-fail');
+    }
+  };
 
   const TransportDetail = (type: 'depart' | 'return') => {
     const { transport } = tripData;
@@ -126,10 +142,10 @@ function PlanDetailScreen(props: PlanDetailProps) {
                       <Text color={'white'} fontWeight={'bold'} fontSize={'lg'}>
                         {fromLocate?.locate.value}
                       </Text>
-                      <Text fontSize={'lg'}>
+                      <Text fontSize={'lg'} color={'white'}>
                         - - - -{' '}
                         <View mt={2}>
-                          <MaterialIcons name="airplanemode-active" size={22} color="black" />
+                          <MaterialIcons name="airplanemode-active" size={22} color="white" />
                         </View>{' '}
                         - - - - {'>'}
                       </Text>
@@ -271,30 +287,54 @@ function PlanDetailScreen(props: PlanDetailProps) {
         break;
       case 'Đặt cọc':
         cell = (
-          <Box
-            bg={{
-              linearGradient: {
-                colors: ['#6364F4', '#FC5C7D'],
-                start: [0, 0],
-                end: [1, 0],
-              },
-            }}
-            p="3"
-            rounded="md"
-            _text={{
-              fontSize: 'md',
-              fontWeight: 'medium',
-              color: 'warmGray.50',
-              textAlign: 'center',
-            }}
-          >
-            <Text color={'warmGray.50'} fontSize={'xs'}>
-              Đặt cọc
-            </Text>
-            <Text color={'warmGray.50'} fontWeight={'semibold'} fontSize={'xl'}>
-              {tripData.deposit}
-            </Text>
-          </Box>
+          <VStack space={3}>
+            <Box
+              bg={{
+                linearGradient: {
+                  colors: ['#6364F4', '#FC5C7D'],
+                  start: [0, 0],
+                  end: [1, 0],
+                },
+              }}
+              p="3"
+              rounded="md"
+              _text={{
+                fontSize: 'md',
+                fontWeight: 'medium',
+                color: 'warmGray.50',
+                textAlign: 'center',
+              }}
+            >
+              <Text color={'warmGray.50'} fontSize={'xs'}>
+                Đặt cọc
+              </Text>
+              <Text color={'warmGray.50'} fontWeight={'semibold'} fontSize={'xl'}>
+                {tripData.deposit}
+              </Text>
+            </Box>
+            <Divider />
+
+            <Box>
+              <AspectRatio w="100%" ratio={16 / 15}>
+                <Image
+                  source={{
+                    uri: 'https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg',
+                  }}
+                  alt="imagePlanDetail"
+                />
+              </AspectRatio>
+              <Button
+                mt={3}
+                onPress={() =>
+                  saveImage(
+                    'https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg'
+                  )
+                }
+              >
+                Tải QR Code
+              </Button>
+            </Box>
+          </VStack>
         );
         break;
       case 'Khởi hành':

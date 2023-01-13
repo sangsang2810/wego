@@ -1,21 +1,21 @@
-import { SafeAreaView, StyleSheet, Text, View, ImageBackground } from 'react-native';
-import Tabs from './src/navigation/Tabs';
-import { Box, extendTheme, NativeBaseProvider } from 'native-base';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { Box, extendTheme, Image, NativeBaseProvider } from 'native-base';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import OnBoardingScreen from './src/authentication/index';
 import { LinearGradient } from 'expo-linear-gradient';
-import AppNavigation from './src/App.navigation';
 import { ASSETS_ENUM } from './src/utils/enums';
 import { BlurView } from 'expo-blur';
 import { Provider } from 'react-redux';
 import { store } from './src/app/store';
+import { SignUpScreen, LoginScreen, OnBoardingScreen } from './src/authentication';
 
 const AuthenticationStack = createStackNavigator();
 const AuthenticationNavigator = () => {
   return (
-    <AuthenticationStack.Navigator screenOptions={{ headerShown: false }}>
+    <AuthenticationStack.Navigator initialRouteName="signUp" screenOptions={{ headerShown: false }}>
       <AuthenticationStack.Screen name="OnBoarding" component={OnBoardingScreen} />
+      <AuthenticationStack.Screen name="login" component={LoginScreen} />
+      <AuthenticationStack.Screen name="signUp" component={SignUpScreen} />
     </AuthenticationStack.Navigator>
   );
 };
@@ -30,19 +30,17 @@ const theme = extendTheme({
   colors: {},
   components: {
     Button: {
-      // Can simply pass default props to change default behaviour of components.
+      // Can simply pass default props to change default behavior of components.
       baseStyle: {
         rounded: 'md',
-        fontWeight: 'bold',
+        _text: {
+          fontWeight: 700,
+        },
       },
-      defaultProps: {
-        colorScheme: 'violet',
-      },
+      defaultProps: {},
     },
     ScrollView: {
-      baseStyle: {
-        // marginBottom: 65,
-      },
+      baseStyle: {},
     },
     Input: {
       baseStyle: {
@@ -70,34 +68,22 @@ export default function App() {
     <Provider store={store}>
       <NativeBaseProvider config={config} theme={theme}>
         <NavigationContainer theme={MyTheme}>
-          <Box
-            bg={{
-              linearGradient: {
-                colors: ['indigo.200', 'fuchsia.300'],
-                start: [0, 0],
-                end: [1, 1],
-              },
-            }}
-            style={styles.container}
-          >
+          <Box style={styles.container}>
             <Box style={styles.container}>
-              <ImageBackground
+              <Image
+                alt="img-app"
                 source={ASSETS_ENUM.IMAGES_ENUM.BACKGROUND}
                 resizeMode={'cover'}
                 style={[styles.image, StyleSheet.absoluteFill]}
-              >
-                <BlurView intensity={100} style={styles.container}>
-                  <SafeAreaView style={[styles.container, styles.safeArea]}>
-                    <View style={styles.container}>
-                      {/* <AppNavigation/> */}
-                      <Tabs />
-                    </View>
-                  </SafeAreaView>
-                </BlurView>
-              </ImageBackground>
+              />
+              <BlurView intensity={90} style={styles.container}>
+                <SafeAreaView style={[styles.container, styles.safeArea]}>
+                  {/* <Tabs /> */}
+                  <AuthenticationNavigator />
+                </SafeAreaView>
+              </BlurView>
             </Box>
           </Box>
-          {/* <AuthenticationNavigator /> */}
         </NavigationContainer>
       </NativeBaseProvider>
     </Provider>
@@ -115,6 +101,5 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.1)',
   },
 });
